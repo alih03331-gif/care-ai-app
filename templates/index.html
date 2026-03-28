@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Care Staff Matcher</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f0f2f5;
+            color: #333;
+        }
+
+        .navbar {
+            background: #1a73e8;
+            color: white;
+            padding: 16px 30px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .navbar h1 { font-size: 22px; }
+        .navbar span { font-size: 28px; }
+
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        }
+        .card h2 {
+            font-size: 18px;
+            color: #1a73e8;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e8f0fe;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-width: 160px;
+        }
+        .form-group label {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        .form-group input {
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border 0.2s;
+        }
+        .form-group input:focus { border-color: #1a73e8; }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-top: 20px;
+        }
+        .checkbox-group input { width: auto; }
+        .checkbox-group label { font-size: 14px; color: #333; margin: 0; }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .btn-primary { background: #1a73e8; color: white; }
+        .btn-primary:hover { background: #1558b0; }
+        .btn-danger { background: #e53935; color: white; }
+        .btn-danger:hover { background: #b71c1c; }
+        .btn-sm { padding: 6px 12px; font-size: 12px; }
+        .btn-toggle-on  { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+        .btn-toggle-off { background: #fce4ec; color: #c62828; border: 1px solid #f48fb1; }
+
+        .result-box {
+            background: #e8f5e9;
+            border: 1px solid #a5d6a7;
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-top: 16px;
+        }
+        .result-box h3 { color: #2e7d32; font-size: 18px; }
+        .result-box p  { color: #555; margin-top: 4px; font-size: 14px; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        th {
+            background: #e8f0fe;
+            color: #1a73e8;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: middle;
+        }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: #fafafa; }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .badge-green { background: #e8f5e9; color: #2e7d32; }
+        .badge-red   { background: #fce4ec; color: #c62828; }
+
+        select {
+            padding: 7px 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 13px;
+            outline: none;
+            width: 100%;
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px 24px;
+            flex: 1;
+            min-width: 140px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            text-align: center;
+        }
+        .stat-card .number {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a73e8;
+        }
+        .stat-card .label {
+            font-size: 13px;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        @media (max-width: 600px) {
+            .form-row { flex-direction: column; }
+            .stats-row { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <span>🏥</span>
+    <h1>Care Staff Matcher</h1>
+</div>
+
+<div class="container">
+
+    <!-- STATS -->
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="number">{{ carers | length }}</div>
+            <div class="label">Total Carers</div>
+        </div>
+        <div class="stat-card">
+            <div class="number">{{ carers | selectattr('available') | list | length }}</div>
+            <div class="label">Available</div>
+        </div>
+        <div class="stat-card">
+            <div class="number">{{ schedule | selectattr('carer') | list | length }}</div>
+            <div class="label">Shifts Assigned</div>
+        </div>
+        <div class="stat-card">
+            <div class="number">{{ schedule | length }}</div>
+            <div class="label">Total Shifts</div>
+        </div>
+    </div>
+
+    <!-- FIND A CARER -->
+    <div class="card">
+        <h2>🔍 Find Best Carer</h2>
+        <form action="/match" method="post">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Required Skill</label>
+                    <input name="skill" placeholder="e.g. dementia">
+                </div>
+                <div class="form-group">
+                    <label>Shift Location</label>
+                    <input name="location" placeholder="e.g. Sheffield, UK">
+                </div>
+                <button class="btn btn-primary" type="submit">Find Match</button>
+            </div>
+        </form>
+
+        {% if result %}
+        <div class="result-box">
+            <h3>✅ Best Match: {{ result }}</h3>
+            <p>Match Score: {{ score }} &nbsp;|&nbsp; Shift Location: {{ location }}</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- WEEKLY SCHEDULE -->
+    <div class="card">
+        <h2>📅 Weekly Schedule</h2>
+        <table>
+            <tr>
+                <th>Shift</th>
+                <th>Assigned Carer</th>
+                <th>Assign / Change</th>
+            </tr>
+            {% for slot in schedule %}
+            <tr>
+                <td><b>{{ slot.shift }}</b></td>
+                <td>
+                    {% if slot.carer %}
+                        <span class="badge badge-green">✅ {{ slot.carer }}</span>
+                    {% else %}
+                        <span class="badge badge-red">⬜ Unassigned</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <form action="/assign_shift" method="post" style="display:flex; gap:8px;">
+                        <input type="hidden" name="shift_index" value="{{ loop.index0 }}">
+                        <select name="carer_name">
+                            <option value="none">-- Unassign --</option>
+                            {% for carer in carers %}
+                                <option value="{{ carer.name }}"
+                                    {% if slot.carer == carer.name %}selected{% endif %}>
+                                    {{ carer.name }}
+                                    {% if not carer.available %}(unavailable){% endif %}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <button class="btn btn-primary btn-sm" type="submit">Assign</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <!-- ADD CARER -->
+    <div class="card">
+        <h2>➕ Add New Carer</h2>
+        <form action="/add_carer" method="post">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input name="name" placeholder="e.g. David Smith">
+                </div>
+                <div class="form-group">
+                    <label>Skills (comma separated)</label>
+                    <input name="skills" placeholder="e.g. dementia, elderly">
+                </div>
+                <div class="form-group">
+                    <label>Location</label>
+                    <input name="location" placeholder="e.g. Liverpool, UK">
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" name="available" id="available" checked>
+                    <label for="available">Available</label>
+                </div>
+                <button class="btn btn-primary" type="submit">Add Carer</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- ALL CARERS -->
+    <div class="card">
+        <h2>👥 All Carers</h2>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Skills</th>
+                <th>Location</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            {% for carer in carers %}
+            <tr>
+                <td><b>{{ carer.name }}</b></td>
+                <td>{{ carer.skills | join(", ") }}</td>
+                <td>{{ carer.location }}</td>
+                <td>
+                    {% if carer.available %}
+                        <span class="badge badge-green">✅ Available</span>
+                    {% else %}
+                        <span class="badge badge-red">❌ Unavailable</span>
+                    {% endif %}
+                </td>
+                <td style="display:flex; gap:8px;">
+                    <a href="/toggle/{{ loop.index0 }}">
+                        <button class="btn btn-sm
+                            {% if carer.available %}btn-toggle-on{% else %}btn-toggle-off{% endif %}">
+                            {% if carer.available %}Set Unavailable{% else %}Set Available{% endif %}
+                        </button>
+                    </a>
+                    <a href="/delete/{{ loop.index0 }}">
+                        <button class="btn btn-danger btn-sm">🗑 Delete</button>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</div>
+</body>
+</html>
