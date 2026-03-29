@@ -15,20 +15,19 @@ default_data = {
         {"name": "Charlie", "skills": ["dementia"], "location": "Bradford, UK", "available": False}
     ],
     "schedule": [
-        {"shift": "Monday Morning",     "carer": None},
-        {"shift": "Monday Afternoon",   "carer": None},
-        {"shift": "Tuesday Morning",    "carer": None},
-        {"shift": "Tuesday Afternoon",  "carer": None},
-        {"shift": "Wednesday Morning",  "carer": None},
-        {"shift": "Wednesday Afternoon","carer": None},
-        {"shift": "Thursday Morning",   "carer": None},
-        {"shift": "Thursday Afternoon", "carer": None},
-        {"shift": "Friday Morning",     "carer": None},
-        {"shift": "Friday Afternoon",   "carer": None},
+        {"shift": "Monday Morning",     "carer": None, "urgent": False, "notes": ""},
+        {"shift": "Monday Afternoon",   "carer": None, "urgent": False, "notes": ""},
+        {"shift": "Tuesday Morning",    "carer": None, "urgent": False, "notes": ""},
+        {"shift": "Tuesday Afternoon",  "carer": None, "urgent": False, "notes": ""},
+        {"shift": "Wednesday Morning",  "carer": None, "urgent": False, "notes": ""},
+        {"shift": "Wednesday Afternoon","carer": None, "urgent": False, "notes": ""},
+        {"shift": "Thursday Morning",   "carer": None, "urgent": False, "notes": ""},
+        {"shift": "Thursday Afternoon", "carer": None, "urgent": False, "notes": ""},
+        {"shift": "Friday Morning",     "carer": None, "urgent": False, "notes": ""},
+        {"shift": "Friday Afternoon",   "carer": None, "urgent": False, "notes": ""},
     ]
 }
 
-# ✅ Login credentials — change these to your own
 ADMIN_USERNAME = "admin"
 ADMIN_PASSWORD = "care1234"
 
@@ -48,6 +47,13 @@ def save_data(data):
 data = load_data()
 carers = data["carers"]
 schedule = data["schedule"]
+
+# Make sure old schedule entries have urgent and notes fields
+for slot in schedule:
+    if "urgent" not in slot:
+        slot["urgent"] = False
+    if "notes" not in slot:
+        slot["notes"] = ""
 
 
 def get_coordinates(place_name):
@@ -93,7 +99,6 @@ def find_best_match(skill, shift_location):
     return best_match, best_score
 
 
-# ✅ LOGIN
 @app.route("/login", methods=["GET", "POST"])
 def login():
     error = None
@@ -108,7 +113,6 @@ def login():
     return render_template("login.html", error=error)
 
 
-# ✅ LOGOUT
 @app.route("/logout")
 def logout():
     session.pop("user", None)
@@ -119,7 +123,17 @@ def logout():
 def home():
     if "user" not in session:
         return redirect("/login")
-    return render_template("index.html", carers=carers, schedule=schedule)
+    search = request.args.get("search", "").lower()
+    filtered_carers = carers
+    if search:
+        filtered_carers = [c for c in carers if search in [s.lower() for s in c["skills"]]]
+    urgent_count = sum(1 for s in schedule if s.get("urgent"))
+    return render_template("index.html",
+                           carers=filtered_carers,
+                           all_carers=carers,
+                           schedule=schedule,
+                           search=search,
+                           urgent_count=urgent_count)
 
 
 @app.route("/add_carer", methods=["POST"])
@@ -164,7 +178,11 @@ def assign_shift():
         return redirect("/login")
     shift_index = int(request.form["shift_index"])
     carer_name = request.form["carer_name"]
+    notes = request.form.get("notes", "")
+    urgent = request.form.get("urgent") == "on"
     schedule[shift_index]["carer"] = carer_name if carer_name != "none" else None
+    schedule[shift_index]["notes"] = notes
+    schedule[shift_index]["urgent"] = urgent
     save_data({"carers": carers, "schedule": schedule})
     return redirect("/")
 
@@ -176,8 +194,15 @@ def match():
     skill = request.form["skill"]
     location = request.form["location"]
     result, score = find_best_match(skill, location)
-    return render_template("index.html", carers=carers, schedule=schedule,
-                           result=result, score=score, location=location)
+    urgent_count = sum(1 for s in schedule if s.get("urgent"))
+    return render_template("index.html",
+                           carers=carers,
+                           all_carers=carers,
+                           schedule=schedule,
+                           result=result,
+                           score=score,
+                           location=location,
+                           urgent_count=urgent_count)
 
 
 if __name__ == "__main__":

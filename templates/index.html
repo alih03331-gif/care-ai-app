@@ -13,28 +13,42 @@
             color: #333;
         }
 
-<div class="navbar">
-    <span>🏥</span>
-    <h1>Care Staff Matcher</h1>
-    <a href="/logout" style="margin-left:auto; color:white; text-decoration:none;">
-        <button style="background:rgba(255,255,255,0.2); color:white; border:1px solid white; padding:8px 16px; border-radius:8px; cursor:pointer;">
-            Logout
-        </button>
-    </a>
-</div>
+        .navbar {
+            background: linear-gradient(135deg, #1a73e8, #0d47a1);
+            color: white;
+            padding: 16px 30px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+        }
+        .navbar h1 { font-size: 22px; }
+        .navbar span { font-size: 28px; }
+        .navbar .logout {
+            margin-left: auto;
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+        }
+        .navbar .logout:hover { background: rgba(255,255,255,0.25); }
 
         .container {
-            max-width: 1000px;
+            max-width: 1050px;
             margin: 30px auto;
             padding: 0 20px;
         }
 
         .card {
             background: white;
-            border-radius: 12px;
+            border-radius: 14px;
             padding: 24px;
             margin-bottom: 24px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
         }
         .card h2 {
             font-size: 18px;
@@ -44,6 +58,41 @@
             border-bottom: 2px solid #e8f0fe;
         }
 
+        /* STATS */
+        .stats-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 14px;
+            padding: 20px 24px;
+            flex: 1;
+            min-width: 140px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+            text-align: center;
+            border-top: 4px solid #1a73e8;
+        }
+        .stat-card.urgent-card { border-top-color: #e53935; }
+        .stat-card.available-card { border-top-color: #2e7d32; }
+        .stat-card.assigned-card { border-top-color: #f57c00; }
+        .stat-card .number {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1a73e8;
+        }
+        .stat-card.urgent-card .number { color: #e53935; }
+        .stat-card.available-card .number { color: #2e7d32; }
+        .stat-card.assigned-card .number { color: #f57c00; }
+        .stat-card .label {
+            font-size: 13px;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        /* FORMS */
         .form-row {
             display: flex;
             gap: 12px;
@@ -81,6 +130,7 @@
         .checkbox-group input { width: auto; }
         .checkbox-group label { font-size: 14px; color: #333; margin: 0; }
 
+        /* BUTTONS */
         .btn {
             padding: 10px 20px;
             border: none;
@@ -88,7 +138,7 @@
             cursor: pointer;
             font-size: 14px;
             font-weight: 600;
-            transition: background 0.2s;
+            transition: all 0.2s;
         }
         .btn-primary { background: #1a73e8; color: white; }
         .btn-primary:hover { background: #1558b0; }
@@ -98,8 +148,9 @@
         .btn-toggle-on  { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
         .btn-toggle-off { background: #fce4ec; color: #c62828; border: 1px solid #f48fb1; }
 
+        /* RESULT */
         .result-box {
-            background: #e8f5e9;
+            background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
             border: 1px solid #a5d6a7;
             border-radius: 10px;
             padding: 16px 20px;
@@ -108,6 +159,7 @@
         .result-box h3 { color: #2e7d32; font-size: 18px; }
         .result-box p  { color: #555; margin-top: 4px; font-size: 14px; }
 
+        /* TABLE */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -127,51 +179,65 @@
         }
         tr:last-child td { border-bottom: none; }
         tr:hover td { background: #fafafa; }
+        tr.urgent-row td { background: #fff8e1; }
+        tr.urgent-row:hover td { background: #fff3cd; }
 
+        /* BADGES */
         .badge {
             padding: 4px 10px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
         }
-        .badge-green { background: #e8f5e9; color: #2e7d32; }
-        .badge-red   { background: #fce4ec; color: #c62828; }
+        .badge-green  { background: #e8f5e9; color: #2e7d32; }
+        .badge-red    { background: #fce4ec; color: #c62828; }
+        .badge-orange { background: #fff3e0; color: #e65100; }
+        .badge-urgent { background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
 
+        /* SCHEDULE FORM */
         select {
             padding: 7px 10px;
             border: 1px solid #ddd;
             border-radius: 8px;
             font-size: 13px;
             outline: none;
-            width: 100%;
         }
-
-        .stats-row {
+        .schedule-form {
             display: flex;
-            gap: 16px;
-            margin-bottom: 24px;
-            flex-wrap: wrap;
+            flex-direction: column;
+            gap: 6px;
         }
-        .stat-card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px 24px;
-            flex: 1;
-            min-width: 140px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-            text-align: center;
+        .schedule-form-row {
+            display: flex;
+            gap: 6px;
+            align-items: center;
         }
-        .stat-card .number {
-            font-size: 32px;
-            font-weight: 700;
-            color: #1a73e8;
-        }
-        .stat-card .label {
-            font-size: 13px;
-            color: #888;
-            margin-top: 4px;
+        .notes-input {
+            width: 100%;
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 12px;
+            outline: none;
         }
 
+        /* SEARCH */
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .search-bar input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+        .search-bar input:focus { border-color: #1a73e8; }
+
+        /* MOBILE */
         @media (max-width: 600px) {
             .form-row { flex-direction: column; }
             .stats-row { flex-direction: column; }
@@ -180,9 +246,11 @@
 </head>
 <body>
 
+<!-- NAVBAR -->
 <div class="navbar">
     <span>🏥</span>
     <h1>Care Staff Matcher</h1>
+    <a href="/logout" class="logout">🚪 Logout</a>
 </div>
 
 <div class="container">
@@ -190,16 +258,20 @@
     <!-- STATS -->
     <div class="stats-row">
         <div class="stat-card">
-            <div class="number">{{ carers | length }}</div>
+            <div class="number">{{ all_carers | length }}</div>
             <div class="label">Total Carers</div>
         </div>
-        <div class="stat-card">
-            <div class="number">{{ carers | selectattr('available') | list | length }}</div>
+        <div class="stat-card available-card">
+            <div class="number">{{ all_carers | selectattr('available') | list | length }}</div>
             <div class="label">Available</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card assigned-card">
             <div class="number">{{ schedule | selectattr('carer') | list | length }}</div>
             <div class="label">Shifts Assigned</div>
+        </div>
+        <div class="stat-card urgent-card">
+            <div class="number">{{ urgent_count }}</div>
+            <div class="label">Urgent Shifts</div>
         </div>
         <div class="stat-card">
             <div class="number">{{ schedule | length }}</div>
@@ -238,12 +310,18 @@
         <table>
             <tr>
                 <th>Shift</th>
-                <th>Assigned Carer</th>
+                <th>Status</th>
+                <th>Notes</th>
                 <th>Assign / Change</th>
             </tr>
             {% for slot in schedule %}
-            <tr>
-                <td><b>{{ slot.shift }}</b></td>
+            <tr class="{% if slot.urgent %}urgent-row{% endif %}">
+                <td>
+                    <b>{{ slot.shift }}</b>
+                    {% if slot.urgent %}
+                        <span class="badge badge-urgent">🔴 URGENT</span>
+                    {% endif %}
+                </td>
                 <td>
                     {% if slot.carer %}
                         <span class="badge badge-green">✅ {{ slot.carer }}</span>
@@ -252,19 +330,38 @@
                     {% endif %}
                 </td>
                 <td>
-                    <form action="/assign_shift" method="post" style="display:flex; gap:8px;">
+                    {% if slot.notes %}
+                        <span style="font-size:13px; color:#555;">📝 {{ slot.notes }}</span>
+                    {% else %}
+                        <span style="font-size:12px; color:#bbb;">No notes</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <form action="/assign_shift" method="post" class="schedule-form">
                         <input type="hidden" name="shift_index" value="{{ loop.index0 }}">
-                        <select name="carer_name">
-                            <option value="none">-- Unassign --</option>
-                            {% for carer in carers %}
-                                <option value="{{ carer.name }}"
-                                    {% if slot.carer == carer.name %}selected{% endif %}>
-                                    {{ carer.name }}
-                                    {% if not carer.available %}(unavailable){% endif %}
-                                </option>
-                            {% endfor %}
-                        </select>
-                        <button class="btn btn-primary btn-sm" type="submit">Assign</button>
+                        <div class="schedule-form-row">
+                            <select name="carer_name">
+                                <option value="none">-- Unassign --</option>
+                                {% for carer in all_carers %}
+                                    <option value="{{ carer.name }}"
+                                        {% if slot.carer == carer.name %}selected{% endif %}>
+                                        {{ carer.name }}
+                                        {% if not carer.available %}(unavailable){% endif %}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            <button class="btn btn-primary btn-sm" type="submit">Save</button>
+                        </div>
+                        <input class="notes-input" name="notes"
+                               placeholder="Add notes..." value="{{ slot.notes }}">
+                        <div class="checkbox-group" style="padding-top:4px;">
+                            <input type="checkbox" name="urgent" id="urgent_{{ loop.index0 }}"
+                                   {% if slot.urgent %}checked{% endif %}>
+                            <label for="urgent_{{ loop.index0 }}"
+                                   style="font-size:12px; color:#e53935;">
+                                🔴 Mark as Urgent
+                            </label>
+                        </div>
                     </form>
                 </td>
             </tr>
@@ -301,6 +398,18 @@
     <!-- ALL CARERS -->
     <div class="card">
         <h2>👥 All Carers</h2>
+
+        <!-- SEARCH -->
+        <form action="/" method="get" class="search-bar">
+            <input name="search" placeholder="🔍 Search by skill e.g. dementia"
+                   value="{{ search }}">
+            <button class="btn btn-primary" type="submit">Search</button>
+            {% if search %}
+                <a href="/"><button class="btn" type="button"
+                    style="background:#eee; color:#333;">✕ Clear</button></a>
+            {% endif %}
+        </form>
+
         <table>
             <tr>
                 <th>Name</th>
@@ -312,8 +421,12 @@
             {% for carer in carers %}
             <tr>
                 <td><b>{{ carer.name }}</b></td>
-                <td>{{ carer.skills | join(", ") }}</td>
-                <td>{{ carer.location }}</td>
+                <td>
+                    {% for skill in carer.skills %}
+                        <span class="badge badge-orange">{{ skill }}</span>
+                    {% endfor %}
+                </td>
+                <td>📍 {{ carer.location }}</td>
                 <td>
                     {% if carer.available %}
                         <span class="badge badge-green">✅ Available</span>
@@ -324,8 +437,10 @@
                 <td style="display:flex; gap:8px;">
                     <a href="/toggle/{{ loop.index0 }}">
                         <button class="btn btn-sm
-                            {% if carer.available %}btn-toggle-on{% else %}btn-toggle-off{% endif %}">
-                            {% if carer.available %}Set Unavailable{% else %}Set Available{% endif %}
+                            {% if carer.available %}btn-toggle-on
+                            {% else %}btn-toggle-off{% endif %}">
+                            {% if carer.available %}Set Unavailable
+                            {% else %}Set Available{% endif %}
                         </button>
                     </a>
                     <a href="/delete/{{ loop.index0 }}">
