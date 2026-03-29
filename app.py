@@ -1,9 +1,10 @@
-from flask import Flask, request, render_template, redirect
+from flask import Flask, request, render_template, redirect, session
 import requests
 import json
 import os
 
 app = Flask(__name__)
+app.secret_key = "carematcher2024secure"
 
 DATA_FILE = "data.json"
 
@@ -26,6 +27,10 @@ default_data = {
         {"shift": "Friday Afternoon",   "carer": None},
     ]
 }
+
+# ✅ Login credentials — change these to your own
+ADMIN_USERNAME = "admin"
+ADMIN_PASSWORD = "care1234"
 
 
 def load_data():
@@ -88,13 +93,39 @@ def find_best_match(skill, shift_location):
     return best_match, best_score
 
 
+# ✅ LOGIN
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    error = None
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+        if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
+            session["user"] = username
+            return redirect("/")
+        else:
+            error = "Wrong username or password!"
+    return render_template("login.html", error=error)
+
+
+# ✅ LOGOUT
+@app.route("/logout")
+def logout():
+    session.pop("user", None)
+    return redirect("/login")
+
+
 @app.route("/")
 def home():
+    if "user" not in session:
+        return redirect("/login")
     return render_template("index.html", carers=carers, schedule=schedule)
 
 
 @app.route("/add_carer", methods=["POST"])
 def add_carer():
+    if "user" not in session:
+        return redirect("/login")
     name = request.form["name"]
     skills = request.form["skills"]
     location = request.form["location"]
@@ -111,6 +142,8 @@ def add_carer():
 
 @app.route("/toggle/<int:index>")
 def toggle(index):
+    if "user" not in session:
+        return redirect("/login")
     carers[index]["available"] = not carers[index]["available"]
     save_data({"carers": carers, "schedule": schedule})
     return redirect("/")
@@ -118,6 +151,8 @@ def toggle(index):
 
 @app.route("/delete/<int:index>")
 def delete(index):
+    if "user" not in session:
+        return redirect("/login")
     carers.pop(index)
     save_data({"carers": carers, "schedule": schedule})
     return redirect("/")
@@ -125,6 +160,8 @@ def delete(index):
 
 @app.route("/assign_shift", methods=["POST"])
 def assign_shift():
+    if "user" not in session:
+        return redirect("/login")
     shift_index = int(request.form["shift_index"])
     carer_name = request.form["carer_name"]
     schedule[shift_index]["carer"] = carer_name if carer_name != "none" else None
@@ -134,6 +171,8 @@ def assign_shift():
 
 @app.route("/match", methods=["POST"])
 def match():
+    if "user" not in session:
+        return redirect("/login")
     skill = request.form["skill"]
     location = request.form["location"]
     result, score = find_best_match(skill, location)
