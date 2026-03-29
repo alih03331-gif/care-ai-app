@@ -58,7 +58,6 @@ for slot in schedule:
     if "notes" not in slot:
         slot["notes"] = ""
 
-# Add weekend shifts if missing
 weekend_shifts = ["Saturday Morning", "Saturday Afternoon", "Sunday Morning", "Sunday Afternoon"]
 existing = [s["shift"] for s in schedule]
 for ws in weekend_shifts:
@@ -96,6 +95,7 @@ def find_best_match(skill, shift_location):
     best_match = None
     best_score = -1
     best_distance = None
+    best_carer_obj = None
     for carer in carers:
         if not carer["available"]:
             continue
@@ -108,7 +108,8 @@ def find_best_match(skill, shift_location):
             best_score = score
             best_match = carer["name"]
             best_distance = round(distance_km, 1)
-    return best_match, best_score, best_distance
+            best_carer_obj = carer
+    return best_match, best_score, best_distance, best_carer_obj
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -138,7 +139,12 @@ def home():
     search = request.args.get("search", "").lower()
     filtered_carers = carers
     if search:
-        filtered_carers = [c for c in carers if search in [s.lower() for s in c["skills"]] or search.lower() in c["name"].lower()]
+        filtered_carers = [
+            c for c in carers
+            if search in c["name"].lower() or
+               search in [s.lower() for s in c["skills"]] or
+               any(search in s.lower() for s in c["skills"])
+        ]
     urgent_count = sum(1 for s in schedule if s.get("urgent"))
     assigned_count = sum(1 for s in schedule if s.get("carer"))
     available_count = sum(1 for c in carers if c["available"])
@@ -152,8 +158,9 @@ def home():
                            available_count=available_count,
                            result=None,
                            score=None,
-                           location=None,
-                           distance=None)
+                           match_location=None,
+                           distance=None,
+                           matched_carer=None)
 
 
 @app.route("/add_carer", methods=["POST"])
@@ -204,16 +211,18 @@ def assign_shift():
     schedule[shift_index]["notes"] = notes
     schedule[shift_index]["urgent"] = urgent
     save_data({"carers": carers, "schedule": schedule})
-    return redirect("/")
+    return redirect("/#schedule")
 
 
 @app.route("/match", methods=["POST"])
 def match():
     if "user" not in session:
         return redirect("/login")
-    skill = request.form["skill"]
-    location = request.form["location"]
-    result, score, distance = find_best_match(skill, location)
+    skill = request.form.get("skill", "").strip()
+    location = request.form.get("location", "").strip()
+    if not skill or not location:
+        return redirect("/")
+    result, score, distance, matched_carer = find_best_match(skill, location)
     urgent_count = sum(1 for s in schedule if s.get("urgent"))
     assigned_count = sum(1 for s in schedule if s.get("carer"))
     available_count = sum(1 for c in carers if c["available"])
@@ -223,8 +232,9 @@ def match():
                            schedule=schedule,
                            result=result,
                            score=score,
-                           location=location,
+                           match_location=location,
                            distance=distance,
+                           matched_carer=matched_carer,
                            search="",
                            urgent_count=urgent_count,
                            assigned_count=assigned_count,

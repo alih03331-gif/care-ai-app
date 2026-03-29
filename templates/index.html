@@ -1,457 +1,573 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Care Staff Matcher</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShiftCare</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:#f0f4f8;color:#0f172a;}
+.layout{display:flex;min-height:100vh;}
 
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: #f0f2f5;
-            color: #333;
-        }
+/* SIDEBAR */
+.sidebar{width:235px;background:linear-gradient(180deg,#0f172a 0%,#1e293b 100%);display:flex;flex-direction:column;flex-shrink:0;position:fixed;top:0;left:0;bottom:0;z-index:100;overflow:hidden;}
+.sidebar-hex{position:absolute;top:0;left:0;right:0;bottom:0;opacity:0.04;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3E%3Cpath d='M28 66L0 50V16L28 0l28 16v34L28 66zM28 100L0 84V50l28-16 28 16v34L28 100z' fill='none' stroke='%23ffffff' stroke-width='1'/%3E%3C/svg%3E");}
+.logo-area{padding:22px 20px 20px;border-bottom:1px solid rgba(255,255,255,0.08);position:relative;}
+.logo-row{display:flex;align-items:center;gap:12px;}
+.logo-icon{width:42px;height:42px;background:linear-gradient(135deg,#38bdf8,#0ea5e9,#0284c7);border-radius:13px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 20px rgba(56,189,248,0.5),0 4px 12px rgba(0,0,0,0.3);flex-shrink:0;position:relative;}
+.logo-icon::after{content:'';position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,rgba(255,255,255,0.25),transparent);border-radius:13px 13px 0 0;}
+.logo-text{font-size:18px;font-weight:800;color:#fff;letter-spacing:-0.5px;}
+.logo-sub{font-size:9px;color:#475569;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;}
+.nav-wrap{padding:16px 12px;flex:1;overflow-y:auto;position:relative;}
+.nav-sl{font-size:9px;color:#475569;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:0 10px;margin:14px 0 6px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:11px;font-size:13px;font-weight:500;color:#64748b;cursor:pointer;margin-bottom:2px;transition:all 0.2s;text-decoration:none;}
+.nav-item.active{background:linear-gradient(135deg,rgba(56,189,248,0.2),rgba(14,165,233,0.1));color:#38bdf8;font-weight:600;border:1px solid rgba(56,189,248,0.2);box-shadow:0 0 12px rgba(56,189,248,0.1);}
+.nav-item:hover:not(.active){background:rgba(255,255,255,0.05);color:#94a3b8;}
+.nav-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.05);flex-shrink:0;}
+.nav-item.active .nav-icon{background:rgba(56,189,248,0.15);}
+.nav-badge{margin-left:auto;background:#ef4444;color:#fff;font-size:9px;font-weight:800;padding:2px 7px;border-radius:10px;box-shadow:0 0 8px rgba(239,68,68,0.4);}
+.sidebar-bottom{padding:14px 12px;border-top:1px solid rgba(255,255,255,0.06);position:relative;}
+.user-card{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,0.05);cursor:pointer;border:1px solid rgba(255,255,255,0.06);}
+.user-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#38bdf8,#0ea5e9);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0;box-shadow:0 0 12px rgba(56,189,248,0.4);}
+.user-name{font-size:13px;font-weight:600;color:#e2e8f0;}
+.user-role{font-size:10px;color:#475569;}
 
-        .navbar {
-            background: linear-gradient(135deg, #1a73e8, #0d47a1);
-            color: white;
-            padding: 16px 30px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.2);
-        }
-        .navbar h1 { font-size: 22px; }
-        .navbar span { font-size: 28px; }
-        .navbar .logout {
-            margin-left: auto;
-            background: rgba(255,255,255,0.15);
-            color: white;
-            border: 1px solid rgba(255,255,255,0.3);
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            text-decoration: none;
-        }
-        .navbar .logout:hover { background: rgba(255,255,255,0.25); }
+/* MAIN */
+.main{flex:1;margin-left:235px;overflow:auto;background:#f0f4f8;}
+.main-bg{position:fixed;top:0;left:235px;right:0;bottom:0;pointer-events:none;z-index:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cpath d='M20 8v24M8 20h24' stroke='%230ea5e9' stroke-width='0.6' stroke-opacity='0.06'/%3E%3C/svg%3E");}
+.topbar{background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);padding:14px 28px;display:flex;align-items:center;gap:16px;border-bottom:1px solid rgba(255,255,255,0.8);position:sticky;top:0;z-index:10;box-shadow:0 1px 0 rgba(0,0,0,0.05);}
+.page-title{font-size:19px;font-weight:800;color:#0f172a;letter-spacing:-0.4px;}
+.page-sub{font-size:11px;color:#94a3b8;margin-top:1px;font-weight:500;}
+.topbar-right{margin-left:auto;display:flex;gap:10px;align-items:center;}
+.notif-btn{width:38px;height:38px;border-radius:11px;background:#f8fafc;border:1px solid #e2e8f0;cursor:pointer;display:flex;align-items:center;justify-content:center;position:relative;}
+.notif-dot{position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;background:#ef4444;border:1.5px solid #fff;box-shadow:0 0 6px rgba(239,68,68,0.6);}
+.btn-primary{background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff;border:none;padding:9px 18px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 4px 14px rgba(14,165,233,0.4);font-family:inherit;position:relative;overflow:hidden;text-decoration:none;display:inline-block;}
+.btn-primary::after{content:'';position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,rgba(255,255,255,0.15),transparent);}
+.content{padding:22px 28px;position:relative;z-index:1;}
 
-        .container {
-            max-width: 1050px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
+.stat-card{background:#fff;border-radius:18px;padding:20px;border:1px solid rgba(255,255,255,0.8);position:relative;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);}
+.stat-shine{position:absolute;top:-40px;right:-40px;width:120px;height:120px;border-radius:50%;filter:blur(30px);opacity:0.15;}
+.stat-glow{position:absolute;bottom:0;left:0;right:0;height:3px;border-radius:0 0 18px 18px;}
+.stat-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;}
+.stat-icon-wrap{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.stat-icon-wrap::after{content:'';position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,rgba(255,255,255,0.3),transparent);}
+.si-blue{background:linear-gradient(135deg,#bfdbfe,#93c5fd);}
+.si-green{background:linear-gradient(135deg,#bbf7d0,#86efac);}
+.si-amber{background:linear-gradient(135deg,#fde68a,#fcd34d);}
+.si-red{background:linear-gradient(135deg,#fecaca,#fca5a5);}
+.stat-trend{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;}
+.trend-up{background:#f0fdf4;color:#16a34a;}
+.trend-warn{background:#fff1f2;color:#dc2626;}
+.trend-neu{background:#f8fafc;color:#64748b;}
+.stat-num{font-size:36px;font-weight:900;color:#0f172a;line-height:1;letter-spacing:-1.5px;}
+.stat-label{font-size:12px;color:#94a3b8;margin-top:5px;font-weight:500;}
 
-        .card {
-            background: white;
-            border-radius: 14px;
-            padding: 24px;
-            margin-bottom: 24px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-        }
-        .card h2 {
-            font-size: 18px;
-            color: #1a73e8;
-            margin-bottom: 16px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #e8f0fe;
-        }
+/* HERO MAP */
+.hero-map{border-radius:20px;margin-bottom:20px;overflow:hidden;position:relative;height:180px;background:linear-gradient(135deg,#0f172a 0%,#1e293b 40%,#0f2744 100%);box-shadow:0 8px 32px rgba(15,23,42,0.25);}
+.map-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(56,189,248,0.08) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,248,0.08) 1px,transparent 1px);background-size:40px 40px;}
+.map-content{position:relative;z-index:2;padding:24px 32px;display:flex;align-items:center;justify-content:space-between;height:100%;}
+.map-title{font-size:22px;font-weight:900;color:#fff;letter-spacing:-0.5px;margin-bottom:6px;}
+.map-sub{font-size:13px;color:#64748b;line-height:1.5;max-width:300px;}
+.map-pills{display:flex;gap:8px;margin-top:12px;}
+.map-pill{background:rgba(56,189,248,0.15);color:#38bdf8;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:600;border:1px solid rgba(56,189,248,0.25);}
+.hero-btn{background:linear-gradient(135deg,#38bdf8,#0ea5e9);color:#fff;border:none;padding:11px 24px;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 0 20px rgba(56,189,248,0.5),0 4px 12px rgba(0,0,0,0.2);font-family:inherit;flex-shrink:0;position:relative;overflow:hidden;margin-right:20px;}
+.hero-btn::after{content:'';position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,rgba(255,255,255,0.2),transparent);}
+.city-dot{position:absolute;display:flex;align-items:center;justify-content:center;}
+.city-ring{width:28px;height:28px;border-radius:50%;border:1.5px solid rgba(56,189,248,0.5);display:flex;align-items:center;justify-content:center;animation:ring-pulse 2.5s ease-in-out infinite;position:relative;}
+.city-ring::before{content:'';position:absolute;width:44px;height:44px;border-radius:50%;border:1px solid rgba(56,189,248,0.2);animation:ring-pulse 2.5s ease-in-out infinite 0.4s;}
+.city-core{width:10px;height:10px;border-radius:50%;background:radial-gradient(circle,#7dd3fc,#0ea5e9);box-shadow:0 0 8px rgba(56,189,248,0.8),0 0 16px rgba(56,189,248,0.4);}
+.city-label{position:absolute;top:-18px;font-size:9px;font-weight:700;color:#7dd3fc;white-space:nowrap;letter-spacing:0.5px;text-shadow:0 0 8px rgba(56,189,248,0.8);}
+@keyframes ring-pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(1.1);}}
+.conn-lines{position:absolute;inset:0;pointer-events:none;}
 
-        /* STATS */
-        .stats-row {
-            display: flex;
-            gap: 16px;
-            margin-bottom: 24px;
-            flex-wrap: wrap;
-        }
-        .stat-card {
-            background: white;
-            border-radius: 14px;
-            padding: 20px 24px;
-            flex: 1;
-            min-width: 140px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-            text-align: center;
-            border-top: 4px solid #1a73e8;
-        }
-        .stat-card.urgent-card { border-top-color: #e53935; }
-        .stat-card.available-card { border-top-color: #2e7d32; }
-        .stat-card.assigned-card { border-top-color: #f57c00; }
-        .stat-card .number {
-            font-size: 36px;
-            font-weight: 700;
-            color: #1a73e8;
-        }
-        .stat-card.urgent-card .number { color: #e53935; }
-        .stat-card.available-card .number { color: #2e7d32; }
-        .stat-card.assigned-card .number { color: #f57c00; }
-        .stat-card .label {
-            font-size: 13px;
-            color: #888;
-            margin-top: 4px;
-        }
+/* GRID */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
 
-        /* FORMS */
-        .form-row {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            align-items: flex-end;
-        }
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-            min-width: 160px;
-        }
-        .form-group label {
-            font-size: 13px;
-            color: #666;
-            margin-bottom: 5px;
-            font-weight: 600;
-        }
-        .form-group input {
-            padding: 10px 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 14px;
-            outline: none;
-            transition: border 0.2s;
-        }
-        .form-group input:focus { border-color: #1a73e8; }
+/* CARD */
+.card{background:#fff;border-radius:18px;border:1px solid rgba(255,255,255,0.8);overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);margin-bottom:16px;}
+.card-head{padding:16px 20px;border-bottom:1px solid #f8fafc;display:flex;align-items:center;gap:10px;}
+.chi{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.chi::after{content:'';position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,rgba(255,255,255,0.4),transparent);}
+.chi-blue{background:linear-gradient(135deg,#bfdbfe,#93c5fd);}
+.chi-green{background:linear-gradient(135deg,#bbf7d0,#86efac);}
+.chi-amber{background:linear-gradient(135deg,#fde68a,#fcd34d);}
+.chi-purple{background:linear-gradient(135deg,#e9d5ff,#d8b4fe);}
+.chi-red{background:linear-gradient(135deg,#fecaca,#fca5a5);}
+.cht{font-size:14px;font-weight:700;color:#0f172a;}
+.chs{font-size:11px;color:#94a3b8;margin-top:1px;}
+.card-body{padding:18px 20px;}
 
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding-top: 20px;
-        }
-        .checkbox-group input { width: auto; }
-        .checkbox-group label { font-size: 14px; color: #333; margin: 0; }
+/* CHARTS */
+.bars{display:flex;align-items:flex-end;gap:6px;height:90px;margin-bottom:6px;}
+.bw{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.b{width:100%;border-radius:6px 6px 0 0;background:linear-gradient(180deg,#bfdbfe,#dbeafe);position:relative;overflow:hidden;}
+.b::after{content:'';position:absolute;top:0;left:0;right:0;height:40%;background:linear-gradient(180deg,rgba(255,255,255,0.4),transparent);}
+.b.hi{background:linear-gradient(180deg,#38bdf8,#0ea5e9,#0284c7);}
+.bl{font-size:9px;color:#94a3b8;font-weight:500;}
+.bv{font-size:9px;color:#0ea5e9;font-weight:700;}
+.donut-row{display:flex;align-items:center;gap:18px;}
+.donut-leg{flex:1;}
+.li{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.ld{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.ll{font-size:12px;color:#64748b;font-weight:500;}
+.lv{margin-left:auto;font-size:13px;font-weight:700;color:#0f172a;}
 
-        /* BUTTONS */
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-        .btn-primary { background: #1a73e8; color: white; }
-        .btn-primary:hover { background: #1558b0; }
-        .btn-danger { background: #e53935; color: white; }
-        .btn-danger:hover { background: #b71c1c; }
-        .btn-sm { padding: 6px 12px; font-size: 12px; }
-        .btn-toggle-on  { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
-        .btn-toggle-off { background: #fce4ec; color: #c62828; border: 1px solid #f48fb1; }
+/* FORMS */
+.form-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;}
+.fg{flex:1;min-width:140px;}
+.fg label{font-size:10px;color:#64748b;font-weight:700;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.5px;}
+.fg input,.fg select{width:100%;padding:10px 14px;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:11px;font-size:13px;color:#0f172a;outline:none;font-family:inherit;transition:all 0.2s;}
+.fg input:focus{border-color:#0ea5e9;background:#fff;box-shadow:0 0 0 3px rgba(14,165,233,0.1);}
 
-        /* RESULT */
-        .result-box {
-            background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
-            border: 1px solid #a5d6a7;
-            border-radius: 10px;
-            padding: 16px 20px;
-            margin-top: 16px;
-        }
-        .result-box h3 { color: #2e7d32; font-size: 18px; }
-        .result-box p  { color: #555; margin-top: 4px; font-size: 14px; }
+/* ADD STAFF GRID */
+.add-grid{display:grid;grid-template-columns:1fr 1fr 1fr auto auto;gap:12px;align-items:flex-end;}
+.checkbox-wrap{display:flex;align-items:center;gap:8px;padding-bottom:10px;}
+.checkbox-wrap input{width:16px;height:16px;accent-color:#0ea5e9;}
+.checkbox-wrap label{font-size:13px;color:#0f172a;font-weight:500;}
 
-        /* TABLE */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 14px;
-        }
-        th {
-            background: #e8f0fe;
-            color: #1a73e8;
-            padding: 12px;
-            text-align: left;
-            font-weight: 600;
-        }
-        td {
-            padding: 12px;
-            border-bottom: 1px solid #f0f0f0;
-            vertical-align: middle;
-        }
-        tr:last-child td { border-bottom: none; }
-        tr:hover td { background: #fafafa; }
-        tr.urgent-row td { background: #fff8e1; }
-        tr.urgent-row:hover td { background: #fff3cd; }
+/* RESULT BOX */
+.result-box{margin-top:14px;padding:16px 18px;background:linear-gradient(135deg,#f0f9ff,#e0f2fe);border:1.5px solid #bae6fd;border-radius:14px;display:flex;align-items:center;gap:14px;box-shadow:0 4px 14px rgba(14,165,233,0.1);}
+.rav{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#38bdf8,#0ea5e9);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0;box-shadow:0 0 16px rgba(14,165,233,0.5);position:relative;overflow:hidden;}
+.rav::after{content:'';position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,rgba(255,255,255,0.3),transparent);border-radius:50%;}
+.rname{font-size:15px;font-weight:700;color:#0f172a;}
+.rmeta{font-size:12px;color:#64748b;margin-top:2px;}
+.rscore{margin-left:auto;background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff;padding:6px 16px;border-radius:20px;font-size:12px;font-weight:700;box-shadow:0 4px 12px rgba(14,165,233,0.4);position:relative;overflow:hidden;white-space:nowrap;flex-shrink:0;}
+.rscore::after{content:'';position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,rgba(255,255,255,0.2),transparent);}
+.no-match{margin-top:14px;padding:14px 18px;background:#fff8f8;border:1.5px solid #fecaca;border-radius:14px;color:#dc2626;font-size:13px;font-weight:600;}
 
-        /* BADGES */
-        .badge {
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        .badge-green  { background: #e8f5e9; color: #2e7d32; }
-        .badge-red    { background: #fce4ec; color: #c62828; }
-        .badge-orange { background: #fff3e0; color: #e65100; }
-        .badge-urgent { background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
+/* TABLE */
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{padding:11px 16px;text-align:left;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;border-bottom:1px solid #f1f5f9;background:#fafbfc;}
+td{padding:12px 16px;border-bottom:1px solid #f8fafc;vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#f8faff;}
+tr.urgent-row td{background:#fff8f8;}
 
-        /* SCHEDULE FORM */
-        select {
-            padding: 7px 10px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 13px;
-            outline: none;
-        }
-        .schedule-form {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-        .schedule-form-row {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-        }
-        .notes-input {
-            width: 100%;
-            padding: 6px 10px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 12px;
-            outline: none;
-        }
+/* BADGES */
+.badge{display:inline-block;padding:4px 11px;border-radius:20px;font-size:11px;font-weight:600;position:relative;overflow:hidden;}
+.badge::after{content:'';position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,rgba(255,255,255,0.3),transparent);}
+.bg-green{background:linear-gradient(135deg,#dcfce7,#bbf7d0);color:#15803d;}
+.bg-red{background:linear-gradient(135deg,#fee2e2,#fecaca);color:#dc2626;}
+.bg-blue{background:linear-gradient(135deg,#dbeafe,#bfdbfe);color:#1d4ed8;}
+.bg-amber{background:linear-gradient(135deg,#fef3c7,#fde68a);color:#b45309;}
+.bg-purple{background:linear-gradient(135deg,#f3e8ff,#e9d5ff);color:#7c3aed;}
+.bg-urgent{background:linear-gradient(135deg,#fee2e2,#fecaca);color:#dc2626;border:1px solid #fca5a5;}
 
-        /* SEARCH */
-        .search-bar {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-        .search-bar input {
-            flex: 1;
-            padding: 10px 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 14px;
-            outline: none;
-        }
-        .search-bar input:focus { border-color: #1a73e8; }
+/* STAFF AVATARS */
+.cav{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;flex-shrink:0;position:relative;overflow:hidden;}
+.cav::after{content:'';position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,rgba(255,255,255,0.3),transparent);border-radius:50%;}
+.cn{font-size:13px;font-weight:600;color:#0f172a;}
+.cl{font-size:11px;color:#94a3b8;}
+.cc{display:flex;align-items:center;gap:10px;}
+.ab{padding:5px 12px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid;font-family:inherit;}
+.ab-on{background:#f0fdf4;color:#16a34a;border-color:#bbf7d0;}
+.ab-off{background:#fff1f2;color:#dc2626;border-color:#fecaca;}
+.ab-del{background:#f8fafc;color:#94a3b8;border-color:#e2e8f0;}
 
-        /* MOBILE */
-        @media (max-width: 600px) {
-            .form-row { flex-direction: column; }
-            .stats-row { flex-direction: column; }
-        }
-    </style>
+/* SEARCH */
+.search-wrap{display:flex;gap:8px;margin-bottom:14px;}
+.search-input{flex:1;padding:9px 14px;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;font-size:13px;color:#0f172a;outline:none;font-family:inherit;}
+.search-input:focus{border-color:#0ea5e9;box-shadow:0 0 0 3px rgba(14,165,233,0.08);}
+.search-btn{padding:9px 16px;background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;}
+.clear-btn{padding:9px 14px;background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;text-decoration:none;display:flex;align-items:center;}
+
+/* SCHEDULE */
+.sch-form{display:flex;flex-direction:column;gap:5px;}
+.sch-row{display:flex;gap:6px;align-items:center;}
+.sch-select{padding:6px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:12px;color:#0f172a;outline:none;font-family:inherit;background:#f8fafc;}
+.sch-input{padding:6px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:12px;color:#0f172a;outline:none;font-family:inherit;background:#f8fafc;width:100%;}
+.sch-btn{padding:6px 14px;background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff;border:none;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;}
+.urgent-check{display:flex;align-items:center;gap:5px;font-size:11px;color:#dc2626;font-weight:600;}
+.urgent-check input{width:13px;height:13px;accent-color:#dc2626;}
+
+/* AVATAR COLORS */
+.av-1{background:linear-gradient(135deg,#38bdf8,#0284c7);}
+.av-2{background:linear-gradient(135deg,#34d399,#059669);}
+.av-3{background:linear-gradient(135deg,#fbbf24,#d97706);}
+.av-4{background:linear-gradient(135deg,#a78bfa,#7c3aed);}
+.av-5{background:linear-gradient(135deg,#f472b6,#db2777);}
+.av-6{background:linear-gradient(135deg,#fb923c,#ea580c);}
+</style>
 </head>
 <body>
+<div class="layout">
 
-<!-- NAVBAR -->
-<div class="navbar">
-    <span>🏥</span>
-    <h1>Care Staff Matcher</h1>
-    <a href="/logout" class="logout">🚪 Logout</a>
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-hex"></div>
+  <div class="logo-area">
+    <div class="logo-row">
+      <div class="logo-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M12 4v16M4 12h16" stroke="white" stroke-width="2.8" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div>
+        <div class="logo-text">ShiftCare</div>
+        <div class="logo-sub">Care Platform</div>
+      </div>
+    </div>
+  </div>
+  <div class="nav-wrap">
+    <div class="nav-sl">Overview</div>
+    <a href="#top" class="nav-item active">
+      <div class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" fill="#38bdf8"/><rect x="14" y="3" width="7" height="7" rx="1.5" fill="#38bdf8" opacity="0.6"/><rect x="3" y="14" width="7" height="7" rx="1.5" fill="#38bdf8" opacity="0.6"/><rect x="14" y="14" width="7" height="7" rx="1.5" fill="#38bdf8" opacity="0.4"/></svg></div>
+      Dashboard
+    </a>
+    <a href="#find" class="nav-item">
+      <div class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#64748b" stroke-width="2"/><path d="M20 20l-3-3" stroke="#64748b" stroke-width="2" stroke-linecap="round"/></svg></div>
+      Find Match
+    </a>
+    <div class="nav-sl">Staff</div>
+    <a href="#add" class="nav-item">
+      <div class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#64748b" stroke-width="2"/><path d="M12 7v10M7 12h10" stroke="#64748b" stroke-width="2" stroke-linecap="round"/></svg></div>
+      Add Staff
+    </a>
+    <a href="#staff" class="nav-item">
+      <div class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="7" r="4" stroke="#64748b" stroke-width="2"/><path d="M3 21v-2a4 4 0 014-4h4a4 4 0 014 4v2" stroke="#64748b" stroke-width="2" stroke-linecap="round"/></svg></div>
+      All Staff
+    </a>
+    <div class="nav-sl">Shifts</div>
+    <a href="#schedule" class="nav-item">
+      <div class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="#64748b" stroke-width="2"/><path d="M3 9h18M8 2v4M16 2v4" stroke="#64748b" stroke-width="2" stroke-linecap="round"/></svg></div>
+      Assign Shifts <span class="nav-badge">{{ urgent_count }}</span>
+    </a>
+    <div class="nav-sl">System</div>
+    <a href="/logout" class="nav-item">
+      <div class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" stroke="#64748b" stroke-width="2" stroke-linecap="round"/></svg></div>
+      Logout
+    </a>
+  </div>
+  <div class="sidebar-bottom">
+    <div class="user-card">
+      <div class="user-av">AD</div>
+      <div>
+        <div class="user-name">Admin</div>
+        <div class="user-role">Administrator</div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div class="container">
+<!-- MAIN -->
+<div class="main" id="top">
+<div class="main-bg"></div>
+<div class="topbar">
+  <div>
+    <div class="page-title">Good morning, Admin 👋</div>
+    <div class="page-sub">ShiftCare Dashboard · Care Staff Platform</div>
+  </div>
+  <div class="topbar-right">
+    <button class="notif-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" stroke="#64748b" stroke-width="2" stroke-linecap="round"/></svg>
+      <div class="notif-dot"></div>
+    </button>
+    <a href="#add" class="btn-primary">＋ Add Staff</a>
+  </div>
+</div>
 
-    <!-- STATS -->
-    <div class="stats-row">
-        <div class="stat-card">
-            <div class="number">{{ all_carers | length }}</div>
-            <div class="label">Total Carers</div>
-        </div>
-        <div class="stat-card available-card">
-            <div class="number">{{ all_carers | selectattr('available') | list | length }}</div>
-            <div class="label">Available</div>
-        </div>
-        <div class="stat-card assigned-card">
-            <div class="number">{{ schedule | selectattr('carer') | list | length }}</div>
-            <div class="label">Shifts Assigned</div>
-        </div>
-        <div class="stat-card urgent-card">
-            <div class="number">{{ urgent_count }}</div>
-            <div class="label">Urgent Shifts</div>
-        </div>
-        <div class="stat-card">
-            <div class="number">{{ schedule | length }}</div>
-            <div class="label">Total Shifts</div>
-        </div>
+<div class="content">
+
+<!-- STATS -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-shine" style="background:#3b82f6"></div>
+    <div class="stat-glow" style="background:linear-gradient(90deg,#3b82f6,#0ea5e9)"></div>
+    <div class="stat-top">
+      <div class="stat-icon-wrap si-blue">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="7" r="4" stroke="#1d4ed8" stroke-width="2"/><path d="M3 21v-2a4 4 0 014-4h4a4 4 0 014 4v2" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round"/><circle cx="17" cy="7" r="3" stroke="#1d4ed8" stroke-width="1.5" opacity="0.6"/></svg>
+      </div>
+      <div class="stat-trend trend-up">↑ Total</div>
     </div>
+    <div class="stat-num">{{ all_carers|length }}</div>
+    <div class="stat-label">Total Staff</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-shine" style="background:#10b981"></div>
+    <div class="stat-glow" style="background:linear-gradient(90deg,#10b981,#34d399)"></div>
+    <div class="stat-top">
+      <div class="stat-icon-wrap si-green">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#15803d" stroke-width="2"/><path d="M8 12l3 3 5-5" stroke="#15803d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="stat-trend trend-up">Active</div>
+    </div>
+    <div class="stat-num">{{ available_count }}</div>
+    <div class="stat-label">Available Now</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-shine" style="background:#f59e0b"></div>
+    <div class="stat-glow" style="background:linear-gradient(90deg,#f59e0b,#fbbf24)"></div>
+    <div class="stat-top">
+      <div class="stat-icon-wrap si-amber">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="#b45309" stroke-width="2"/><path d="M3 9h18M8 2v4M16 2v4" stroke="#b45309" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+      <div class="stat-trend trend-neu">{{ schedule|length }} total</div>
+    </div>
+    <div class="stat-num">{{ assigned_count }}</div>
+    <div class="stat-label">Shifts Assigned</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-shine" style="background:#ef4444"></div>
+    <div class="stat-glow" style="background:linear-gradient(90deg,#ef4444,#f87171)"></div>
+    <div class="stat-top">
+      <div class="stat-icon-wrap si-red">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 17h.01" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round"/><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="#dc2626" stroke-width="2"/></svg>
+      </div>
+      <div class="stat-trend trend-warn">Urgent</div>
+    </div>
+    <div class="stat-num">{{ urgent_count }}</div>
+    <div class="stat-label">Urgent Shifts</div>
+  </div>
+</div>
 
-    <!-- FIND A CARER -->
-    <div class="card">
-        <h2>🔍 Find Best Carer</h2>
-        <form action="/match" method="post">
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Required Skill</label>
-                    <input name="skill" placeholder="e.g. dementia">
-                </div>
-                <div class="form-group">
-                    <label>Shift Location</label>
-                    <input name="location" placeholder="e.g. Sheffield, UK">
-                </div>
-                <button class="btn btn-primary" type="submit">Find Match</button>
-            </div>
-        </form>
+<!-- HERO MAP -->
+<div class="hero-map">
+  <div class="map-grid"></div>
+  <svg style="position:absolute;right:0;top:0;height:100%;width:260px;opacity:0.12" viewBox="0 0 200 300" fill="none" preserveAspectRatio="xMidYMid meet">
+    <path d="M100 20 C90 25,75 30,70 45 C65 55,68 65,65 75 C60 90,50 95,45 108 C40 120,42 135,38 148 C34 160,25 168,28 180 C31 192,45 195,52 205 C58 214,60 225,68 232 C76 238,88 240,95 248 C102 255,108 268,115 272 C122 275,132 270,138 262 C144 254,143 242,148 232 C153 222,162 216,165 205 C168 193,163 180,162 168 C161 156,165 143,162 130 C159 118,150 110,148 98 C146 86,150 73,148 61 C146 49,136 40,130 30 C124 20,112 18,100 20Z" fill="#38bdf8"/>
+  </svg>
+  <div class="city-dot" style="right:148px;top:35px;"><div class="city-ring"><div class="city-core"></div></div><div class="city-label">EDINBURGH</div></div>
+  <div class="city-dot" style="right:142px;top:68px;"><div class="city-ring" style="animation-delay:0.3s"><div class="city-core"></div></div><div class="city-label">LEEDS</div></div>
+  <div class="city-dot" style="right:162px;top:78px;"><div class="city-ring" style="animation-delay:0.6s"><div class="city-core"></div></div><div class="city-label">MANCHESTER</div></div>
+  <div class="city-dot" style="right:145px;top:95px;"><div class="city-ring" style="animation-delay:0.9s"><div class="city-core"></div></div><div class="city-label">SHEFFIELD</div></div>
+  <div class="city-dot" style="right:152px;top:118px;"><div class="city-ring" style="animation-delay:1.2s"><div class="city-core"></div></div><div class="city-label">LONDON</div></div>
+  <svg class="conn-lines" viewBox="0 0 700 180">
+    <line x1="553" y1="35" x2="558" y2="68" stroke="#38bdf8" stroke-width="0.8" stroke-opacity="0.3" stroke-dasharray="3 3"/>
+    <line x1="558" y1="68" x2="538" y2="78" stroke="#38bdf8" stroke-width="0.8" stroke-opacity="0.3" stroke-dasharray="3 3"/>
+    <line x1="538" y1="78" x2="555" y2="95" stroke="#38bdf8" stroke-width="0.8" stroke-opacity="0.3" stroke-dasharray="3 3"/>
+    <line x1="555" y1="95" x2="548" y2="118" stroke="#38bdf8" stroke-width="0.8" stroke-opacity="0.3" stroke-dasharray="3 3"/>
+  </svg>
+  <div class="map-content">
+    <div>
+      <div class="map-title">Live Coverage Map 🗺️</div>
+      <div class="map-sub">Real road distance matching across the UK. Nearest available staff found instantly.</div>
+      <div class="map-pills">
+        <div class="map-pill">🗺️ Real Distance</div>
+        <div class="map-pill">⚡ Instant Match</div>
+        <div class="map-pill">🏙️ 5 Cities</div>
+      </div>
+    </div>
+    <a href="#find"><button class="hero-btn">Find Best Staff →</button></a>
+  </div>
+</div>
 
-        {% if result %}
-        <div class="result-box">
-            <h3>✅ Best Match: {{ result }}</h3>
-            <p>Match Score: {{ score }} &nbsp;|&nbsp; Shift Location: {{ location }}</p>
+<!-- CHARTS ROW -->
+<div class="grid-2">
+  <div class="card" style="margin-bottom:0">
+    <div class="card-head">
+      <div class="chi chi-blue"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3 20h18M5 20V10l7-7 7 7v10" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round"/></svg></div>
+      <div><div class="cht">Weekly Shifts</div><div class="chs">Assignments this week</div></div>
+    </div>
+    <div class="card-body">
+      <div class="bars">
+        <div class="bw"><div class="bv">3</div><div class="b" style="height:54px"></div><div class="bl">Mon</div></div>
+        <div class="bw"><div class="bv">5</div><div class="b hi" style="height:90px"></div><div class="bl">Tue</div></div>
+        <div class="bw"><div class="bv">2</div><div class="b" style="height:36px"></div><div class="bl">Wed</div></div>
+        <div class="bw"><div class="bv">4</div><div class="b" style="height:72px"></div><div class="bl">Thu</div></div>
+        <div class="bw"><div class="bv">3</div><div class="b" style="height:54px"></div><div class="bl">Fri</div></div>
+        <div class="bw"><div class="bv">1</div><div class="b" style="height:18px"></div><div class="bl">Sat</div></div>
+        <div class="bw"><div class="bv">0</div><div class="b" style="height:4px"></div><div class="bl">Sun</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:0">
+    <div class="card-head">
+      <div class="chi chi-purple"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#7c3aed" stroke-width="2"/><path d="M12 8v4l3 3" stroke="#7c3aed" stroke-width="2" stroke-linecap="round"/></svg></div>
+      <div><div class="cht">Skills Breakdown</div><div class="chs">Staff by specialty</div></div>
+    </div>
+    <div class="card-body">
+      <div class="donut-row">
+        <svg width="88" height="88" viewBox="0 0 100 100">
+          <defs><linearGradient id="dg1" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#38bdf8"/><stop offset="100%" stop-color="#0ea5e9"/></linearGradient></defs>
+          <circle cx="50" cy="50" r="35" fill="none" stroke="#f1f5f9" stroke-width="16"/>
+          <circle cx="50" cy="50" r="35" fill="none" stroke="url(#dg1)" stroke-width="16" stroke-dasharray="88 132" stroke-dashoffset="0" transform="rotate(-90 50 50)"/>
+          <circle cx="50" cy="50" r="35" fill="none" stroke="#10b981" stroke-width="16" stroke-dasharray="44 176" stroke-dashoffset="-88" transform="rotate(-90 50 50)"/>
+          <circle cx="50" cy="50" r="35" fill="none" stroke="#f59e0b" stroke-width="16" stroke-dasharray="28 192" stroke-dashoffset="-132" transform="rotate(-90 50 50)"/>
+          <text x="50" y="46" text-anchor="middle" font-size="14" font-weight="900" fill="#0f172a" font-family="Inter,sans-serif">{{ all_carers|length }}</text>
+          <text x="50" y="58" text-anchor="middle" font-size="8" fill="#94a3b8" font-family="Inter,sans-serif">staff</text>
+        </svg>
+        <div class="donut-leg">
+          <div class="li"><div class="ld" style="background:#0ea5e9;box-shadow:0 0 6px rgba(14,165,233,0.5)"></div><div class="ll">Dementia</div><div class="lv">—</div></div>
+          <div class="li"><div class="ld" style="background:#10b981;box-shadow:0 0 6px rgba(16,185,129,0.5)"></div><div class="ll">General</div><div class="lv">—</div></div>
+          <div class="li"><div class="ld" style="background:#f59e0b;box-shadow:0 0 6px rgba(245,158,11,0.5)"></div><div class="ll">Elderly</div><div class="lv">—</div></div>
+          <div class="li"><div class="ld" style="background:#e2e8f0"></div><div class="ll">Other</div><div class="lv">—</div></div>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 1. FIND BEST STAFF -->
+<div class="card" id="find">
+  <div class="card-head">
+    <div class="chi chi-blue"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#1d4ed8" stroke-width="2"/><path d="M20 20l-3-3" stroke="#1d4ed8" stroke-width="2.5" stroke-linecap="round"/></svg></div>
+    <div><div class="cht">Find Best Staff</div><div class="chs">AI-powered matching · real road distance</div></div>
+  </div>
+  <div class="card-body">
+    <form action="/match" method="post">
+      <div class="form-row">
+        <div class="fg">
+          <label>Required Skill</label>
+          <input name="skill" placeholder="e.g. dementia" value="{% if result %}{{ request.form.get('skill','') }}{% endif %}" required>
+        </div>
+        <div class="fg">
+          <label>Shift Location</label>
+          <input name="location" placeholder="e.g. Sheffield, UK" value="{% if match_location %}{{ match_location }}{% endif %}" required>
+        </div>
+        <button class="btn-primary" type="submit" style="padding:10px 20px;">🔍 Find Match</button>
+      </div>
+    </form>
+    {% if result %}
+    <div class="result-box">
+      <div class="rav">{{ result[:2].upper() }}</div>
+      <div>
+        <div class="rname">✅ Best Match: {{ result }}</div>
+        <div class="rmeta">📍 {{ match_location }} &nbsp;·&nbsp;
+          {% if matched_carer %}{{ matched_carer.skills | join(", ") }} &nbsp;·&nbsp;{% endif %}
+          {{ distance }} km away
+        </div>
+      </div>
+      <div class="rscore">Score: {{ score }}</div>
+    </div>
+    {% elif result == "" %}
+    <div class="no-match">❌ No available staff found matching that skill and location.</div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- 2. ADD NEW STAFF -->
+<div class="card" id="add">
+  <div class="card-head">
+    <div class="chi chi-green"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#15803d" stroke-width="2"/><path d="M12 7v10M7 12h10" stroke="#15803d" stroke-width="2" stroke-linecap="round"/></svg></div>
+    <div><div class="cht">Add New Staff</div><div class="chs">Register a new care staff member</div></div>
+  </div>
+  <div class="card-body">
+    <form action="/add_carer" method="post">
+      <div class="add-grid">
+        <div class="fg"><label>Full Name</label><input name="name" placeholder="e.g. David Smith" required></div>
+        <div class="fg"><label>Skills (comma separated)</label><input name="skills" placeholder="e.g. dementia, elderly" required></div>
+        <div class="fg"><label>Location</label><input name="location" placeholder="e.g. Liverpool, UK" required></div>
+        <div class="checkbox-wrap"><input type="checkbox" name="available" id="avail" checked><label for="avail">Available</label></div>
+        <div style="padding-bottom:10px"><button class="btn-primary" type="submit">Add Staff</button></div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- 3. ALL STAFF -->
+<div class="card" id="staff">
+  <div class="card-head">
+    <div class="chi chi-blue"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="7" r="4" stroke="#1d4ed8" stroke-width="2"/><path d="M3 21v-2a4 4 0 014-4h4a4 4 0 014 4v2" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round"/></svg></div>
+    <div><div class="cht">All Staff</div><div class="chs">Manage your care staff members</div></div>
+  </div>
+  <div class="card-body" style="padding-bottom:0">
+    <form action="/" method="get">
+      <div class="search-wrap">
+        <input class="search-input" name="search" placeholder="🔍 Search by name or skill e.g. dementia..." value="{{ search }}">
+        <button class="search-btn" type="submit">Search</button>
+        {% if search %}<a href="/" class="clear-btn">✕ Clear</a>{% endif %}
+      </div>
+    </form>
+  </div>
+  <table>
+    <tr><th>Staff Member</th><th>Skills</th><th>Location</th><th>Status</th><th>Actions</th></tr>
+    {% for carer in carers %}
+    <tr>
+      <td>
+        <div class="cc">
+          <div class="cav av-{{ (loop.index0 % 6) + 1 }}" style="box-shadow:0 0 10px rgba(14,165,233,0.25)">
+            {{ carer.name[:2].upper() }}
+          </div>
+          <div>
+            <div class="cn">{{ carer.name }}</div>
+            <div class="cl">📍 {{ carer.location }}</div>
+          </div>
+        </div>
+      </td>
+      <td>{% for skill in carer.skills %}<span class="badge bg-blue" style="margin-right:3px;margin-bottom:2px">{{ skill }}</span>{% endfor %}</td>
+      <td style="color:#64748b;font-size:13px;">{{ carer.location }}</td>
+      <td>
+        {% if carer.available %}
+          <span class="badge bg-green">✅ Available</span>
+        {% else %}
+          <span class="badge bg-red">❌ Unavailable</span>
         {% endif %}
-    </div>
+      </td>
+      <td>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <a href="/toggle/{{ loop.index0 }}">
+            <button class="ab {% if carer.available %}ab-on{% else %}ab-off{% endif %}">
+              {% if carer.available %}Set Off{% else %}Set On{% endif %}
+            </button>
+          </a>
+          <a href="/delete/{{ loop.index0 }}" onclick="return confirm('Delete {{ carer.name }}?')">
+            <button class="ab ab-del">🗑 Delete</button>
+          </a>
+        </div>
+      </td>
+    </tr>
+    {% endfor %}
+    {% if carers|length == 0 %}
+    <tr><td colspan="5" style="text-align:center;color:#94a3b8;padding:24px">No staff found matching your search.</td></tr>
+    {% endif %}
+  </table>
+</div>
 
-    <!-- WEEKLY SCHEDULE -->
-    <div class="card">
-        <h2>📅 Weekly Schedule</h2>
-        <table>
-            <tr>
-                <th>Shift</th>
-                <th>Status</th>
-                <th>Notes</th>
-                <th>Assign / Change</th>
-            </tr>
-            {% for slot in schedule %}
-            <tr class="{% if slot.urgent %}urgent-row{% endif %}">
-                <td>
-                    <b>{{ slot.shift }}</b>
-                    {% if slot.urgent %}
-                        <span class="badge badge-urgent">🔴 URGENT</span>
-                    {% endif %}
-                </td>
-                <td>
-                    {% if slot.carer %}
-                        <span class="badge badge-green">✅ {{ slot.carer }}</span>
-                    {% else %}
-                        <span class="badge badge-red">⬜ Unassigned</span>
-                    {% endif %}
-                </td>
-                <td>
-                    {% if slot.notes %}
-                        <span style="font-size:13px; color:#555;">📝 {{ slot.notes }}</span>
-                    {% else %}
-                        <span style="font-size:12px; color:#bbb;">No notes</span>
-                    {% endif %}
-                </td>
-                <td>
-                    <form action="/assign_shift" method="post" class="schedule-form">
-                        <input type="hidden" name="shift_index" value="{{ loop.index0 }}">
-                        <div class="schedule-form-row">
-                            <select name="carer_name">
-                                <option value="none">-- Unassign --</option>
-                                {% for carer in all_carers %}
-                                    <option value="{{ carer.name }}"
-                                        {% if slot.carer == carer.name %}selected{% endif %}>
-                                        {{ carer.name }}
-                                        {% if not carer.available %}(unavailable){% endif %}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                            <button class="btn btn-primary btn-sm" type="submit">Save</button>
-                        </div>
-                        <input class="notes-input" name="notes"
-                               placeholder="Add notes..." value="{{ slot.notes }}">
-                        <div class="checkbox-group" style="padding-top:4px;">
-                            <input type="checkbox" name="urgent" id="urgent_{{ loop.index0 }}"
-                                   {% if slot.urgent %}checked{% endif %}>
-                            <label for="urgent_{{ loop.index0 }}"
-                                   style="font-size:12px; color:#e53935;">
-                                🔴 Mark as Urgent
-                            </label>
-                        </div>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
-    </div>
-
-    <!-- ADD CARER -->
-    <div class="card">
-        <h2>➕ Add New Carer</h2>
-        <form action="/add_carer" method="post">
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Full Name</label>
-                    <input name="name" placeholder="e.g. David Smith">
-                </div>
-                <div class="form-group">
-                    <label>Skills (comma separated)</label>
-                    <input name="skills" placeholder="e.g. dementia, elderly">
-                </div>
-                <div class="form-group">
-                    <label>Location</label>
-                    <input name="location" placeholder="e.g. Liverpool, UK">
-                </div>
-                <div class="checkbox-group">
-                    <input type="checkbox" name="available" id="available" checked>
-                    <label for="available">Available</label>
-                </div>
-                <button class="btn btn-primary" type="submit">Add Carer</button>
-            </div>
+<!-- 4. LET'S ASSIGN SHIFTS -->
+<div class="card" id="schedule">
+  <div class="card-head">
+    <div class="chi chi-amber"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="#b45309" stroke-width="2"/><path d="M3 9h18M8 2v4M16 2v4" stroke="#b45309" stroke-width="2" stroke-linecap="round"/></svg></div>
+    <div><div class="cht">Let's Assign Shifts 📋</div><div class="chs">Assign staff to weekly shifts · Mon–Sun</div></div>
+  </div>
+  <table>
+    <tr><th>Shift</th><th>Assigned Staff</th><th>Notes</th><th>Assign / Change</th></tr>
+    {% for slot in schedule %}
+    <tr class="{% if slot.urgent %}urgent-row{% endif %}">
+      <td>
+        <b>{{ slot.shift }}</b>
+        {% if slot.urgent %}<span class="badge bg-urgent" style="margin-left:6px">🔴 URGENT</span>{% endif %}
+      </td>
+      <td>
+        {% if slot.carer %}
+          <span class="badge bg-green">✅ {{ slot.carer }}</span>
+        {% else %}
+          <span class="badge bg-red">⬜ Unassigned</span>
+        {% endif %}
+      </td>
+      <td style="font-size:12px;color:{% if slot.notes %}#475569{% else %}#cbd5e1{% endif %}">
+        {% if slot.notes %}📝 {{ slot.notes }}{% else %}—{% endif %}
+      </td>
+      <td>
+        <form action="/assign_shift" method="post" class="sch-form">
+          <input type="hidden" name="shift_index" value="{{ loop.index0 }}">
+          <div class="sch-row">
+            <select name="carer_name" class="sch-select">
+              <option value="none">— Unassign —</option>
+              {% for carer in all_carers %}
+              <option value="{{ carer.name }}" {% if slot.carer == carer.name %}selected{% endif %}>
+                {{ carer.name }}{% if not carer.available %} (off){% endif %}
+              </option>
+              {% endfor %}
+            </select>
+            <button class="sch-btn" type="submit">Save</button>
+          </div>
+          <input class="sch-input" name="notes" placeholder="Add notes..." value="{{ slot.notes }}">
+          <div class="urgent-check">
+            <input type="checkbox" name="urgent" id="u{{ loop.index0 }}" {% if slot.urgent %}checked{% endif %}>
+            <label for="u{{ loop.index0 }}">🔴 Mark Urgent</label>
+          </div>
         </form>
-    </div>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
 
-    <!-- ALL CARERS -->
-    <div class="card">
-        <h2>👥 All Carers</h2>
-
-        <!-- SEARCH -->
-        <form action="/" method="get" class="search-bar">
-            <input name="search" placeholder="🔍 Search by skill e.g. dementia"
-                   value="{{ search }}">
-            <button class="btn btn-primary" type="submit">Search</button>
-            {% if search %}
-                <a href="/"><button class="btn" type="button"
-                    style="background:#eee; color:#333;">✕ Clear</button></a>
-            {% endif %}
-        </form>
-
-        <table>
-            <tr>
-                <th>Name</th>
-                <th>Skills</th>
-                <th>Location</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-            {% for carer in carers %}
-            <tr>
-                <td><b>{{ carer.name }}</b></td>
-                <td>
-                    {% for skill in carer.skills %}
-                        <span class="badge badge-orange">{{ skill }}</span>
-                    {% endfor %}
-                </td>
-                <td>📍 {{ carer.location }}</td>
-                <td>
-                    {% if carer.available %}
-                        <span class="badge badge-green">✅ Available</span>
-                    {% else %}
-                        <span class="badge badge-red">❌ Unavailable</span>
-                    {% endif %}
-                </td>
-                <td style="display:flex; gap:8px;">
-                    <a href="/toggle/{{ loop.index0 }}">
-                        <button class="btn btn-sm
-                            {% if carer.available %}btn-toggle-on
-                            {% else %}btn-toggle-off{% endif %}">
-                            {% if carer.available %}Set Unavailable
-                            {% else %}Set Available{% endif %}
-                        </button>
-                    </a>
-                    <a href="/delete/{{ loop.index0 }}">
-                        <button class="btn btn-danger btn-sm">🗑 Delete</button>
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
-    </div>
-
+</div>
+</div>
 </div>
 </body>
 </html>
