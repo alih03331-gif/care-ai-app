@@ -15,16 +15,20 @@ default_data = {
         {"name": "Charlie", "skills": ["dementia"], "location": "Bradford, UK", "available": False}
     ],
     "schedule": [
-        {"shift": "Monday Morning",     "carer": None, "urgent": False, "notes": ""},
-        {"shift": "Monday Afternoon",   "carer": None, "urgent": False, "notes": ""},
-        {"shift": "Tuesday Morning",    "carer": None, "urgent": False, "notes": ""},
-        {"shift": "Tuesday Afternoon",  "carer": None, "urgent": False, "notes": ""},
-        {"shift": "Wednesday Morning",  "carer": None, "urgent": False, "notes": ""},
-        {"shift": "Wednesday Afternoon","carer": None, "urgent": False, "notes": ""},
-        {"shift": "Thursday Morning",   "carer": None, "urgent": False, "notes": ""},
-        {"shift": "Thursday Afternoon", "carer": None, "urgent": False, "notes": ""},
-        {"shift": "Friday Morning",     "carer": None, "urgent": False, "notes": ""},
-        {"shift": "Friday Afternoon",   "carer": None, "urgent": False, "notes": ""},
+        {"shift": "Monday Morning",      "carer": None, "urgent": False, "notes": ""},
+        {"shift": "Monday Afternoon",    "carer": None, "urgent": False, "notes": ""},
+        {"shift": "Tuesday Morning",     "carer": None, "urgent": False, "notes": ""},
+        {"shift": "Tuesday Afternoon",   "carer": None, "urgent": False, "notes": ""},
+        {"shift": "Wednesday Morning",   "carer": None, "urgent": False, "notes": ""},
+        {"shift": "Wednesday Afternoon", "carer": None, "urgent": False, "notes": ""},
+        {"shift": "Thursday Morning",    "carer": None, "urgent": False, "notes": ""},
+        {"shift": "Thursday Afternoon",  "carer": None, "urgent": False, "notes": ""},
+        {"shift": "Friday Morning",      "carer": None, "urgent": False, "notes": ""},
+        {"shift": "Friday Afternoon",    "carer": None, "urgent": False, "notes": ""},
+        {"shift": "Saturday Morning",    "carer": None, "urgent": False, "notes": ""},
+        {"shift": "Saturday Afternoon",  "carer": None, "urgent": False, "notes": ""},
+        {"shift": "Sunday Morning",      "carer": None, "urgent": False, "notes": ""},
+        {"shift": "Sunday Afternoon",    "carer": None, "urgent": False, "notes": ""},
     ]
 }
 
@@ -48,12 +52,18 @@ data = load_data()
 carers = data["carers"]
 schedule = data["schedule"]
 
-# Make sure old schedule entries have urgent and notes fields
 for slot in schedule:
     if "urgent" not in slot:
         slot["urgent"] = False
     if "notes" not in slot:
         slot["notes"] = ""
+
+# Add weekend shifts if missing
+weekend_shifts = ["Saturday Morning", "Saturday Afternoon", "Sunday Morning", "Sunday Afternoon"]
+existing = [s["shift"] for s in schedule]
+for ws in weekend_shifts:
+    if ws not in existing:
+        schedule.append({"shift": ws, "carer": None, "urgent": False, "notes": ""})
 
 
 def get_coordinates(place_name):
@@ -85,6 +95,7 @@ def get_road_distance_km(place1, place2):
 def find_best_match(skill, shift_location):
     best_match = None
     best_score = -1
+    best_distance = None
     for carer in carers:
         if not carer["available"]:
             continue
@@ -96,7 +107,8 @@ def find_best_match(skill, shift_location):
         if score > best_score:
             best_score = score
             best_match = carer["name"]
-    return best_match, best_score
+            best_distance = round(distance_km, 1)
+    return best_match, best_score, best_distance
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -126,14 +138,22 @@ def home():
     search = request.args.get("search", "").lower()
     filtered_carers = carers
     if search:
-        filtered_carers = [c for c in carers if search in [s.lower() for s in c["skills"]]]
+        filtered_carers = [c for c in carers if search in [s.lower() for s in c["skills"]] or search.lower() in c["name"].lower()]
     urgent_count = sum(1 for s in schedule if s.get("urgent"))
+    assigned_count = sum(1 for s in schedule if s.get("carer"))
+    available_count = sum(1 for c in carers if c["available"])
     return render_template("index.html",
                            carers=filtered_carers,
                            all_carers=carers,
                            schedule=schedule,
                            search=search,
-                           urgent_count=urgent_count)
+                           urgent_count=urgent_count,
+                           assigned_count=assigned_count,
+                           available_count=available_count,
+                           result=None,
+                           score=None,
+                           location=None,
+                           distance=None)
 
 
 @app.route("/add_carer", methods=["POST"])
@@ -193,8 +213,10 @@ def match():
         return redirect("/login")
     skill = request.form["skill"]
     location = request.form["location"]
-    result, score = find_best_match(skill, location)
+    result, score, distance = find_best_match(skill, location)
     urgent_count = sum(1 for s in schedule if s.get("urgent"))
+    assigned_count = sum(1 for s in schedule if s.get("carer"))
+    available_count = sum(1 for c in carers if c["available"])
     return render_template("index.html",
                            carers=carers,
                            all_carers=carers,
@@ -202,7 +224,11 @@ def match():
                            result=result,
                            score=score,
                            location=location,
-                           urgent_count=urgent_count)
+                           distance=distance,
+                           search="",
+                           urgent_count=urgent_count,
+                           assigned_count=assigned_count,
+                           available_count=available_count)
 
 
 if __name__ == "__main__":
