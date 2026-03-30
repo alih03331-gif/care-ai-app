@@ -1,0 +1,123 @@
+{
+  "carers": [
+    {
+      "name": "Alice",
+      "skills": [
+        "dementia",
+        "elderly"
+      ],
+      "location": "Leeds, UK",
+      "available": true
+    },
+    {
+      "name": "Bob",
+      "skills": [
+        "general"
+      ],
+      "location": "Manchester, UK",
+      "available": true
+    },
+    {
+      "name": "Charlie",
+      "skills": [
+        "dementia"
+      ],
+      "location": "Bradford, UK",
+      "available": false
+    },
+    {
+      "name": "Tauqeer",
+      "skills": [
+        "elderly"
+      ],
+      "location": "Liverpool",
+      "available": true
+    }
+  ],
+  "schedule": [
+    {
+      "shift": "Monday Morning",
+      "carer": "Alice",
+      "urgent": true,
+      "notes": ""
+    },
+    {
+      "shift": "Monday Afternoon",
+      "carer": null,
+      "urgent": false,
+      "notes": ""
+    },
+    {
+      "shift": "Tuesday Morning",
+      "carer": null,
+      "urgent": false,
+      "notes": ""
+    },
+    {
+      "shift": "Tuesday Afternoon",
+      "carer": null,
+      "urgent": false,
+      "notes": ""
+    },
+    {
+      "shift": "Wednesday Morning",
+      "carer": null,
+      "urgent": false,
+      "notes": ""
+    },
+    {
+      "shift": "Wednesday Afternoon",
+      "carer": null,
+      "urgent": false,
+      "notes": ""
+    },
+    {
+      "shift": "Thursday Morning",
+      "carer": null,
+      "urgent": false,
+      "notes": ""
+    },
+    {
+      "shift": "Thursday Afternoon",
+      "carer": null,
+      "urgent": false,
+      "notes": ""
+    },
+    {
+      "shift": "Friday Morning",
+      "carer": null,
+      "urgent": false,
+      "notes": ""
+    },
+    {
+      "shift": "Friday Afternoon",
+      "carer": null,
+      "urgent": false,
+      "notes": ""
+    },
+    {
+      "shift": "Saturday Morning",
+      "carer": null,
+      "urgent": false,
+      "notes": ""
+    },
+    {
+      "shift": "Saturday Afternoon",
+      "carer": null,
+      "urgent": false,
+      "notes": ""
+    },
+    {
+      "shift": "Sunday Morning",
+      "carer": null,
+      "urgent": false,
+      "notes": ""
+    },
+    {
+      "shift": "Sunday Afternoon",
+      "carer": null,
+      "urgent": false,
+      "notes": ""
+    }
+  ]
+}

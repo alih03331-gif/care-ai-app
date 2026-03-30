@@ -9,8 +9,6 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Inter',sans-serif;background:#f0f4f8;color:#0f172a;}
 .layout{display:flex;min-height:100vh;}
-
-/* SIDEBAR */
 .sidebar{width:235px;background:linear-gradient(180deg,#0f172a 0%,#1e293b 100%);display:flex;flex-direction:column;flex-shrink:0;position:fixed;top:0;left:0;bottom:0;z-index:100;overflow:hidden;}
 .sidebar-hex{position:absolute;top:0;left:0;right:0;bottom:0;opacity:0.04;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3E%3Cpath d='M28 66L0 50V16L28 0l28 16v34L28 66zM28 100L0 84V50l28-16 28 16v34L28 100z' fill='none' stroke='%23ffffff' stroke-width='1'/%3E%3C/svg%3E");}
 .logo-area{padding:22px 20px 20px;border-bottom:1px solid rgba(255,255,255,0.08);position:relative;}
@@ -32,8 +30,6 @@ body{font-family:'Inter',sans-serif;background:#f0f4f8;color:#0f172a;}
 .user-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#38bdf8,#0ea5e9);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0;box-shadow:0 0 12px rgba(56,189,248,0.4);}
 .user-name{font-size:13px;font-weight:600;color:#e2e8f0;}
 .user-role{font-size:10px;color:#475569;}
-
-/* MAIN */
 .main{flex:1;margin-left:235px;overflow:auto;background:#f0f4f8;}
 .main-bg{position:fixed;top:0;left:235px;right:0;bottom:0;pointer-events:none;z-index:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cpath d='M20 8v24M8 20h24' stroke='%230ea5e9' stroke-width='0.6' stroke-opacity='0.06'/%3E%3C/svg%3E");}
 .topbar{background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);padding:14px 28px;display:flex;align-items:center;gap:16px;border-bottom:1px solid rgba(255,255,255,0.8);position:sticky;top:0;z-index:10;box-shadow:0 1px 0 rgba(0,0,0,0.05);}
@@ -45,8 +41,6 @@ body{font-family:'Inter',sans-serif;background:#f0f4f8;color:#0f172a;}
 .btn-primary{background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff;border:none;padding:9px 18px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 4px 14px rgba(14,165,233,0.4);font-family:inherit;position:relative;overflow:hidden;text-decoration:none;display:inline-block;}
 .btn-primary::after{content:'';position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,rgba(255,255,255,0.15),transparent);}
 .content{padding:22px 28px;position:relative;z-index:1;}
-
-/* STATS */
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
 .stat-card{background:#fff;border-radius:18px;padding:20px;border:1px solid rgba(255,255,255,0.8);position:relative;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);}
 .stat-shine{position:absolute;top:-40px;right:-40px;width:120px;height:120px;border-radius:50%;filter:blur(30px);opacity:0.15;}
@@ -64,8 +58,6 @@ body{font-family:'Inter',sans-serif;background:#f0f4f8;color:#0f172a;}
 .trend-neu{background:#f8fafc;color:#64748b;}
 .stat-num{font-size:36px;font-weight:900;color:#0f172a;line-height:1;letter-spacing:-1.5px;}
 .stat-label{font-size:12px;color:#94a3b8;margin-top:5px;font-weight:500;}
-
-/* HERO MAP */
 .hero-map{border-radius:20px;margin-bottom:20px;overflow:hidden;position:relative;height:180px;background:linear-gradient(135deg,#0f172a 0%,#1e293b 40%,#0f2744 100%);box-shadow:0 8px 32px rgba(15,23,42,0.25);}
 .map-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(56,189,248,0.08) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,248,0.08) 1px,transparent 1px);background-size:40px 40px;}
 .map-content{position:relative;z-index:2;padding:24px 32px;display:flex;align-items:center;justify-content:space-between;height:100%;}
@@ -82,11 +74,7 @@ body{font-family:'Inter',sans-serif;background:#f0f4f8;color:#0f172a;}
 .city-label{position:absolute;top:-18px;font-size:9px;font-weight:700;color:#7dd3fc;white-space:nowrap;letter-spacing:0.5px;text-shadow:0 0 8px rgba(56,189,248,0.8);}
 @keyframes ring-pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(1.1);}}
 .conn-lines{position:absolute;inset:0;pointer-events:none;}
-
-/* GRID */
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
-
-/* CARD */
 .card{background:#fff;border-radius:18px;border:1px solid rgba(255,255,255,0.8);overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);margin-bottom:16px;}
 .card-head{padding:16px 20px;border-bottom:1px solid #f8fafc;display:flex;align-items:center;gap:10px;}
 .chi{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
@@ -99,8 +87,6 @@ body{font-family:'Inter',sans-serif;background:#f0f4f8;color:#0f172a;}
 .cht{font-size:14px;font-weight:700;color:#0f172a;}
 .chs{font-size:11px;color:#94a3b8;margin-top:1px;}
 .card-body{padding:18px 20px;}
-
-/* CHARTS */
 .bars{display:flex;align-items:flex-end;gap:6px;height:90px;margin-bottom:6px;}
 .bw{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;}
 .b{width:100%;border-radius:6px 6px 0 0;background:linear-gradient(180deg,#bfdbfe,#dbeafe);position:relative;overflow:hidden;}
@@ -114,21 +100,15 @@ body{font-family:'Inter',sans-serif;background:#f0f4f8;color:#0f172a;}
 .ld{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
 .ll{font-size:12px;color:#64748b;font-weight:500;}
 .lv{margin-left:auto;font-size:13px;font-weight:700;color:#0f172a;}
-
-/* FORMS */
 .form-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;}
 .fg{flex:1;min-width:140px;}
 .fg label{font-size:10px;color:#64748b;font-weight:700;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.5px;}
 .fg input,.fg select{width:100%;padding:10px 14px;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:11px;font-size:13px;color:#0f172a;outline:none;font-family:inherit;transition:all 0.2s;}
 .fg input:focus{border-color:#0ea5e9;background:#fff;box-shadow:0 0 0 3px rgba(14,165,233,0.1);}
-
-/* ADD STAFF GRID */
 .add-grid{display:grid;grid-template-columns:1fr 1fr 1fr auto auto;gap:12px;align-items:flex-end;}
 .checkbox-wrap{display:flex;align-items:center;gap:8px;padding-bottom:10px;}
 .checkbox-wrap input{width:16px;height:16px;accent-color:#0ea5e9;}
 .checkbox-wrap label{font-size:13px;color:#0f172a;font-weight:500;}
-
-/* RESULT BOX */
 .result-box{margin-top:14px;padding:16px 18px;background:linear-gradient(135deg,#f0f9ff,#e0f2fe);border:1.5px solid #bae6fd;border-radius:14px;display:flex;align-items:center;gap:14px;box-shadow:0 4px 14px rgba(14,165,233,0.1);}
 .rav{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#38bdf8,#0ea5e9);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0;box-shadow:0 0 16px rgba(14,165,233,0.5);position:relative;overflow:hidden;}
 .rav::after{content:'';position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,rgba(255,255,255,0.3),transparent);border-radius:50%;}
@@ -137,26 +117,19 @@ body{font-family:'Inter',sans-serif;background:#f0f4f8;color:#0f172a;}
 .rscore{margin-left:auto;background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff;padding:6px 16px;border-radius:20px;font-size:12px;font-weight:700;box-shadow:0 4px 12px rgba(14,165,233,0.4);position:relative;overflow:hidden;white-space:nowrap;flex-shrink:0;}
 .rscore::after{content:'';position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,rgba(255,255,255,0.2),transparent);}
 .no-match{margin-top:14px;padding:14px 18px;background:#fff8f8;border:1.5px solid #fecaca;border-radius:14px;color:#dc2626;font-size:13px;font-weight:600;}
-
-/* TABLE */
 table{width:100%;border-collapse:collapse;font-size:13px;}
 th{padding:11px 16px;text-align:left;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;border-bottom:1px solid #f1f5f9;background:#fafbfc;}
 td{padding:12px 16px;border-bottom:1px solid #f8fafc;vertical-align:middle;}
 tr:last-child td{border-bottom:none;}
 tr:hover td{background:#f8faff;}
 tr.urgent-row td{background:#fff8f8;}
-
-/* BADGES */
 .badge{display:inline-block;padding:4px 11px;border-radius:20px;font-size:11px;font-weight:600;position:relative;overflow:hidden;}
 .badge::after{content:'';position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,rgba(255,255,255,0.3),transparent);}
 .bg-green{background:linear-gradient(135deg,#dcfce7,#bbf7d0);color:#15803d;}
 .bg-red{background:linear-gradient(135deg,#fee2e2,#fecaca);color:#dc2626;}
 .bg-blue{background:linear-gradient(135deg,#dbeafe,#bfdbfe);color:#1d4ed8;}
 .bg-amber{background:linear-gradient(135deg,#fef3c7,#fde68a);color:#b45309;}
-.bg-purple{background:linear-gradient(135deg,#f3e8ff,#e9d5ff);color:#7c3aed;}
 .bg-urgent{background:linear-gradient(135deg,#fee2e2,#fecaca);color:#dc2626;border:1px solid #fca5a5;}
-
-/* STAFF AVATARS */
 .cav{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;flex-shrink:0;position:relative;overflow:hidden;}
 .cav::after{content:'';position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,rgba(255,255,255,0.3),transparent);border-radius:50%;}
 .cn{font-size:13px;font-weight:600;color:#0f172a;}
@@ -166,15 +139,11 @@ tr.urgent-row td{background:#fff8f8;}
 .ab-on{background:#f0fdf4;color:#16a34a;border-color:#bbf7d0;}
 .ab-off{background:#fff1f2;color:#dc2626;border-color:#fecaca;}
 .ab-del{background:#f8fafc;color:#94a3b8;border-color:#e2e8f0;}
-
-/* SEARCH */
 .search-wrap{display:flex;gap:8px;margin-bottom:14px;}
 .search-input{flex:1;padding:9px 14px;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;font-size:13px;color:#0f172a;outline:none;font-family:inherit;}
 .search-input:focus{border-color:#0ea5e9;box-shadow:0 0 0 3px rgba(14,165,233,0.08);}
 .search-btn{padding:9px 16px;background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;}
 .clear-btn{padding:9px 14px;background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;text-decoration:none;display:flex;align-items:center;}
-
-/* SCHEDULE */
 .sch-form{display:flex;flex-direction:column;gap:5px;}
 .sch-row{display:flex;gap:6px;align-items:center;}
 .sch-select{padding:6px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:12px;color:#0f172a;outline:none;font-family:inherit;background:#f8fafc;}
@@ -182,8 +151,6 @@ tr.urgent-row td{background:#fff8f8;}
 .sch-btn{padding:6px 14px;background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff;border:none;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;}
 .urgent-check{display:flex;align-items:center;gap:5px;font-size:11px;color:#dc2626;font-weight:600;}
 .urgent-check input{width:13px;height:13px;accent-color:#dc2626;}
-
-/* AVATAR COLORS */
 .av-1{background:linear-gradient(135deg,#38bdf8,#0284c7);}
 .av-2{background:linear-gradient(135deg,#34d399,#059669);}
 .av-3{background:linear-gradient(135deg,#fbbf24,#d97706);}
@@ -243,10 +210,10 @@ tr.urgent-row td{background:#fff8f8;}
   </div>
   <div class="sidebar-bottom">
     <div class="user-card">
-      <div class="user-av">AD</div>
+      <div class="user-av">{{ agency_name[:2].upper() }}</div>
       <div>
-        <div class="user-name">Admin</div>
-        <div class="user-role">Administrator</div>
+        <div class="user-name">{{ agency_name }}</div>
+        <div class="user-role">Agency Account</div>
       </div>
     </div>
   </div>
@@ -257,7 +224,7 @@ tr.urgent-row td{background:#fff8f8;}
 <div class="main-bg"></div>
 <div class="topbar">
   <div>
-    <div class="page-title">Good morning, Admin 👋</div>
+    <div class="page-title">Welcome, {{ agency_name }} 👋</div>
     <div class="page-sub">ShiftCare Dashboard · Care Staff Platform</div>
   </div>
   <div class="topbar-right">
@@ -278,7 +245,7 @@ tr.urgent-row td{background:#fff8f8;}
     <div class="stat-glow" style="background:linear-gradient(90deg,#3b82f6,#0ea5e9)"></div>
     <div class="stat-top">
       <div class="stat-icon-wrap si-blue">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="7" r="4" stroke="#1d4ed8" stroke-width="2"/><path d="M3 21v-2a4 4 0 014-4h4a4 4 0 014 4v2" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round"/><circle cx="17" cy="7" r="3" stroke="#1d4ed8" stroke-width="1.5" opacity="0.6"/></svg>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="7" r="4" stroke="#1d4ed8" stroke-width="2"/><path d="M3 21v-2a4 4 0 014-4h4a4 4 0 014 4v2" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round"/></svg>
       </div>
       <div class="stat-trend trend-up">↑ Total</div>
     </div>
@@ -304,7 +271,7 @@ tr.urgent-row td{background:#fff8f8;}
       <div class="stat-icon-wrap si-amber">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="#b45309" stroke-width="2"/><path d="M3 9h18M8 2v4M16 2v4" stroke="#b45309" stroke-width="2" stroke-linecap="round"/></svg>
       </div>
-      <div class="stat-trend trend-neu">{{ schedule|length }} total</div>
+      <div class="stat-trend trend-neu">{{ shift_names|length }} total</div>
     </div>
     <div class="stat-num">{{ assigned_count }}</div>
     <div class="stat-label">Shifts Assigned</div>
@@ -354,7 +321,7 @@ tr.urgent-row td{background:#fff8f8;}
   </div>
 </div>
 
-<!-- CHARTS ROW -->
+<!-- CHARTS -->
 <div class="grid-2">
   <div class="card" style="margin-bottom:0">
     <div class="card-head">
@@ -363,13 +330,13 @@ tr.urgent-row td{background:#fff8f8;}
     </div>
     <div class="card-body">
       <div class="bars">
-        <div class="bw"><div class="bv">3</div><div class="b" style="height:54px"></div><div class="bl">Mon</div></div>
-        <div class="bw"><div class="bv">5</div><div class="b hi" style="height:90px"></div><div class="bl">Tue</div></div>
-        <div class="bw"><div class="bv">2</div><div class="b" style="height:36px"></div><div class="bl">Wed</div></div>
-        <div class="bw"><div class="bv">4</div><div class="b" style="height:72px"></div><div class="bl">Thu</div></div>
-        <div class="bw"><div class="bv">3</div><div class="b" style="height:54px"></div><div class="bl">Fri</div></div>
-        <div class="bw"><div class="bv">1</div><div class="b" style="height:18px"></div><div class="bl">Sat</div></div>
-        <div class="bw"><div class="bv">0</div><div class="b" style="height:4px"></div><div class="bl">Sun</div></div>
+        <div class="bw"><div class="bv">{{ shift_dict.get('Monday Morning') and shift_dict['Monday Morning'].carer_name and 1 or 0 }}</div><div class="b {% if shift_dict.get('Monday Morning') and shift_dict['Monday Morning'].carer_name %}hi{% endif %}" style="height:54px"></div><div class="bl">Mon</div></div>
+        <div class="bw"><div class="bv">{{ shift_dict.get('Tuesday Morning') and shift_dict['Tuesday Morning'].carer_name and 1 or 0 }}</div><div class="b {% if shift_dict.get('Tuesday Morning') and shift_dict['Tuesday Morning'].carer_name %}hi{% endif %}" style="height:72px"></div><div class="bl">Tue</div></div>
+        <div class="bw"><div class="bv">{{ shift_dict.get('Wednesday Morning') and shift_dict['Wednesday Morning'].carer_name and 1 or 0 }}</div><div class="b {% if shift_dict.get('Wednesday Morning') and shift_dict['Wednesday Morning'].carer_name %}hi{% endif %}" style="height:36px"></div><div class="bl">Wed</div></div>
+        <div class="bw"><div class="bv">{{ shift_dict.get('Thursday Morning') and shift_dict['Thursday Morning'].carer_name and 1 or 0 }}</div><div class="b {% if shift_dict.get('Thursday Morning') and shift_dict['Thursday Morning'].carer_name %}hi{% endif %}" style="height:54px"></div><div class="bl">Thu</div></div>
+        <div class="bw"><div class="bv">{{ shift_dict.get('Friday Morning') and shift_dict['Friday Morning'].carer_name and 1 or 0 }}</div><div class="b {% if shift_dict.get('Friday Morning') and shift_dict['Friday Morning'].carer_name %}hi{% endif %}" style="height:45px"></div><div class="bl">Fri</div></div>
+        <div class="bw"><div class="bv">{{ shift_dict.get('Saturday Morning') and shift_dict['Saturday Morning'].carer_name and 1 or 0 }}</div><div class="b {% if shift_dict.get('Saturday Morning') and shift_dict['Saturday Morning'].carer_name %}hi{% endif %}" style="height:18px"></div><div class="bl">Sat</div></div>
+        <div class="bw"><div class="bv">{{ shift_dict.get('Sunday Morning') and shift_dict['Sunday Morning'].carer_name and 1 or 0 }}</div><div class="b {% if shift_dict.get('Sunday Morning') and shift_dict['Sunday Morning'].carer_name %}hi{% endif %}" style="height:9px"></div><div class="bl">Sun</div></div>
       </div>
     </div>
   </div>
@@ -390,9 +357,9 @@ tr.urgent-row td{background:#fff8f8;}
           <text x="50" y="58" text-anchor="middle" font-size="8" fill="#94a3b8" font-family="Inter,sans-serif">staff</text>
         </svg>
         <div class="donut-leg">
-          <div class="li"><div class="ld" style="background:#0ea5e9;box-shadow:0 0 6px rgba(14,165,233,0.5)"></div><div class="ll">Dementia</div><div class="lv">—</div></div>
-          <div class="li"><div class="ld" style="background:#10b981;box-shadow:0 0 6px rgba(16,185,129,0.5)"></div><div class="ll">General</div><div class="lv">—</div></div>
-          <div class="li"><div class="ld" style="background:#f59e0b;box-shadow:0 0 6px rgba(245,158,11,0.5)"></div><div class="ll">Elderly</div><div class="lv">—</div></div>
+          <div class="li"><div class="ld" style="background:#0ea5e9"></div><div class="ll">Dementia</div><div class="lv">{{ all_carers|selectattr('skills','contains','dementia')|list|length if all_carers else '—' }}</div></div>
+          <div class="li"><div class="ld" style="background:#10b981"></div><div class="ll">General</div><div class="lv">—</div></div>
+          <div class="li"><div class="ld" style="background:#f59e0b"></div><div class="ll">Elderly</div><div class="lv">—</div></div>
           <div class="li"><div class="ld" style="background:#e2e8f0"></div><div class="ll">Other</div><div class="lv">—</div></div>
         </div>
       </div>
@@ -411,11 +378,11 @@ tr.urgent-row td{background:#fff8f8;}
       <div class="form-row">
         <div class="fg">
           <label>Required Skill</label>
-          <input name="skill" placeholder="e.g. dementia" value="{% if result %}{{ request.form.get('skill','') }}{% endif %}" required>
+          <input name="skill" placeholder="e.g. dementia" value="{{ match_skill if match_skill else '' }}" required>
         </div>
         <div class="fg">
           <label>Shift Location</label>
-          <input name="location" placeholder="e.g. Sheffield, UK" value="{% if match_location %}{{ match_location }}{% endif %}" required>
+          <input name="location" placeholder="e.g. Sheffield, UK" value="{{ match_location if match_location else '' }}" required>
         </div>
         <button class="btn-primary" type="submit" style="padding:10px 20px;">🔍 Find Match</button>
       </div>
@@ -425,15 +392,14 @@ tr.urgent-row td{background:#fff8f8;}
       <div class="rav">{{ result[:2].upper() }}</div>
       <div>
         <div class="rname">✅ Best Match: {{ result }}</div>
-        <div class="rmeta">📍 {{ match_location }} &nbsp;·&nbsp;
-          {% if matched_carer %}{{ matched_carer.skills | join(", ") }} &nbsp;·&nbsp;{% endif %}
-          {{ distance }} km away
+        <div class="rmeta">
+          📍 {{ match_location }}
+          {% if matched_carer %} &nbsp;·&nbsp; {{ matched_carer.skills }}{% endif %}
+          {% if distance %} &nbsp;·&nbsp; {{ distance }} km away{% endif %}
         </div>
       </div>
       <div class="rscore">Score: {{ score }}</div>
     </div>
-    {% elif result == "" %}
-    <div class="no-match">❌ No available staff found matching that skill and location.</div>
     {% endif %}
   </div>
 </div>
@@ -466,7 +432,7 @@ tr.urgent-row td{background:#fff8f8;}
   <div class="card-body" style="padding-bottom:0">
     <form action="/" method="get">
       <div class="search-wrap">
-        <input class="search-input" name="search" placeholder="🔍 Search by name or skill e.g. dementia..." value="{{ search }}">
+        <input class="search-input" name="search" placeholder="🔍 Search by name or skill..." value="{{ search }}">
         <button class="search-btn" type="submit">Search</button>
         {% if search %}<a href="/" class="clear-btn">✕ Clear</a>{% endif %}
       </div>
@@ -478,16 +444,18 @@ tr.urgent-row td{background:#fff8f8;}
     <tr>
       <td>
         <div class="cc">
-          <div class="cav av-{{ (loop.index0 % 6) + 1 }}" style="box-shadow:0 0 10px rgba(14,165,233,0.25)">
-            {{ carer.name[:2].upper() }}
-          </div>
+          <div class="cav av-{{ (loop.index0 % 6) + 1 }}">{{ carer.name[:2].upper() }}</div>
           <div>
             <div class="cn">{{ carer.name }}</div>
             <div class="cl">📍 {{ carer.location }}</div>
           </div>
         </div>
       </td>
-      <td>{% for skill in carer.skills %}<span class="badge bg-blue" style="margin-right:3px;margin-bottom:2px">{{ skill }}</span>{% endfor %}</td>
+      <td>
+        {% for skill in carer.skills_list() %}
+          <span class="badge bg-blue" style="margin-right:3px">{{ skill }}</span>
+        {% endfor %}
+      </td>
       <td style="color:#64748b;font-size:13px;">{{ carer.location }}</td>
       <td>
         {% if carer.available %}
@@ -497,13 +465,13 @@ tr.urgent-row td{background:#fff8f8;}
         {% endif %}
       </td>
       <td>
-        <div style="display:flex;gap:6px;flex-wrap:wrap">
-          <a href="/toggle/{{ loop.index0 }}">
+        <div style="display:flex;gap:6px;">
+          <a href="/toggle/{{ carer.id }}">
             <button class="ab {% if carer.available %}ab-on{% else %}ab-off{% endif %}">
               {% if carer.available %}Set Off{% else %}Set On{% endif %}
             </button>
           </a>
-          <a href="/delete/{{ loop.index0 }}" onclick="return confirm('Delete {{ carer.name }}?')">
+          <a href="/delete/{{ carer.id }}" onclick="return confirm('Delete {{ carer.name }}?')">
             <button class="ab ab-del">🗑 Delete</button>
           </a>
         </div>
@@ -511,7 +479,7 @@ tr.urgent-row td{background:#fff8f8;}
     </tr>
     {% endfor %}
     {% if carers|length == 0 %}
-    <tr><td colspan="5" style="text-align:center;color:#94a3b8;padding:24px">No staff found matching your search.</td></tr>
+    <tr><td colspan="5" style="text-align:center;color:#94a3b8;padding:24px">No staff found.</td></tr>
     {% endif %}
   </table>
 </div>
@@ -524,40 +492,50 @@ tr.urgent-row td{background:#fff8f8;}
   </div>
   <table>
     <tr><th>Shift</th><th>Assigned Staff</th><th>Notes</th><th>Assign / Change</th></tr>
-    {% for slot in schedule %}
-    <tr class="{% if slot.urgent %}urgent-row{% endif %}">
+    {% for shift_name in shift_names %}
+    {% set slot = shift_dict.get(shift_name) %}
+    <tr class="{% if slot and slot.urgent %}urgent-row{% endif %}">
       <td>
-        <b>{{ slot.shift }}</b>
-        {% if slot.urgent %}<span class="badge bg-urgent" style="margin-left:6px">🔴 URGENT</span>{% endif %}
+        <b>{{ shift_name }}</b>
+        {% if slot and slot.urgent %}
+          <span class="badge bg-urgent" style="margin-left:6px">🔴 URGENT</span>
+        {% endif %}
       </td>
       <td>
-        {% if slot.carer %}
-          <span class="badge bg-green">✅ {{ slot.carer }}</span>
+        {% if slot and slot.carer_name %}
+          <span class="badge bg-green">✅ {{ slot.carer_name }}</span>
         {% else %}
           <span class="badge bg-red">⬜ Unassigned</span>
         {% endif %}
       </td>
-      <td style="font-size:12px;color:{% if slot.notes %}#475569{% else %}#cbd5e1{% endif %}">
-        {% if slot.notes %}📝 {{ slot.notes }}{% else %}—{% endif %}
+      <td>
+        {% if slot and slot.notes %}
+          <span style="font-size:12px;color:#475569;">📝 {{ slot.notes }}</span>
+        {% else %}
+          <span style="font-size:12px;color:#cbd5e1;">—</span>
+        {% endif %}
       </td>
       <td>
         <form action="/assign_shift" method="post" class="sch-form">
-          <input type="hidden" name="shift_index" value="{{ loop.index0 }}">
+          <input type="hidden" name="shift_name" value="{{ shift_name }}">
           <div class="sch-row">
             <select name="carer_name" class="sch-select">
               <option value="none">— Unassign —</option>
               {% for carer in all_carers %}
-              <option value="{{ carer.name }}" {% if slot.carer == carer.name %}selected{% endif %}>
+              <option value="{{ carer.name }}"
+                {% if slot and slot.carer_name == carer.name %}selected{% endif %}>
                 {{ carer.name }}{% if not carer.available %} (off){% endif %}
               </option>
               {% endfor %}
             </select>
             <button class="sch-btn" type="submit">Save</button>
           </div>
-          <input class="sch-input" name="notes" placeholder="Add notes..." value="{{ slot.notes }}">
+          <input class="sch-input" name="notes" placeholder="Add notes..."
+                 value="{{ slot.notes if slot and slot.notes else '' }}">
           <div class="urgent-check">
-            <input type="checkbox" name="urgent" id="u{{ loop.index0 }}" {% if slot.urgent %}checked{% endif %}>
-            <label for="u{{ loop.index0 }}">🔴 Mark Urgent</label>
+            <input type="checkbox" name="urgent" id="u_{{ loop.index0 }}"
+                   {% if slot and slot.urgent %}checked{% endif %}>
+            <label for="u_{{ loop.index0 }}">🔴 Mark Urgent</label>
           </div>
         </form>
       </td>

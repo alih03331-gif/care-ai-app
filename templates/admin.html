@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShiftCare — Admin Panel</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:#f0f4f8;color:#0f172a;}
+.layout{display:flex;min-height:100vh;}
+.sidebar{width:235px;background:linear-gradient(180deg,#0f172a,#1e293b);display:flex;flex-direction:column;flex-shrink:0;position:fixed;top:0;left:0;bottom:0;z-index:100;}
+.logo-area{padding:22px 20px 20px;border-bottom:1px solid rgba(255,255,255,0.08);}
+.logo-row{display:flex;align-items:center;gap:12px;}
+.logo-icon{width:42px;height:42px;background:linear-gradient(135deg,#38bdf8,#0284c7);border-radius:13px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 20px rgba(56,189,248,0.5);}
+.logo-text{font-size:18px;font-weight:800;color:#fff;}
+.logo-sub{font-size:9px;color:#475569;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;}
+.admin-badge{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;margin-top:6px;display:inline-block;}
+.nav-wrap{padding:16px 12px;flex:1;}
+.nav-sl{font-size:9px;color:#475569;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:0 10px;margin:14px 0 6px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:11px;font-size:13px;font-weight:500;color:#64748b;cursor:pointer;margin-bottom:2px;text-decoration:none;}
+.nav-item.active{background:linear-gradient(135deg,rgba(56,189,248,0.2),rgba(14,165,233,0.1));color:#38bdf8;font-weight:600;border:1px solid rgba(56,189,248,0.2);}
+.nav-item:hover:not(.active){background:rgba(255,255,255,0.05);color:#94a3b8;}
+.nav-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.05);}
+.sidebar-bottom{padding:14px 12px;border-top:1px solid rgba(255,255,255,0.06);}
+.user-card{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,0.05);}
+.user-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#d97706);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;}
+.user-name{font-size:13px;font-weight:600;color:#e2e8f0;}
+.user-role{font-size:10px;color:#f59e0b;font-weight:600;}
+.main{flex:1;margin-left:235px;}
+.topbar{background:rgba(255,255,255,0.95);padding:14px 28px;display:flex;align-items:center;border-bottom:1px solid #eef0f5;position:sticky;top:0;z-index:10;}
+.page-title{font-size:19px;font-weight:800;color:#0f172a;}
+.page-sub{font-size:11px;color:#94a3b8;margin-top:1px;}
+.topbar-right{margin-left:auto;}
+.content{padding:24px 28px;}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;}
+.stat-card{background:#fff;border-radius:16px;padding:20px;border:1px solid #eef0f5;box-shadow:0 2px 8px rgba(0,0,0,0.04);position:relative;overflow:hidden;}
+.stat-shine{position:absolute;top:-30px;right:-30px;width:100px;height:100px;border-radius:50%;filter:blur(20px);opacity:0.15;}
+.stat-num{font-size:32px;font-weight:900;color:#0f172a;letter-spacing:-1px;}
+.stat-label{font-size:12px;color:#94a3b8;margin-top:4px;}
+.stat-icon{font-size:24px;margin-bottom:10px;}
+.card{background:#fff;border-radius:16px;border:1px solid #eef0f5;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.04);margin-bottom:20px;}
+.card-head{padding:16px 20px;border-bottom:1px solid #f8fafc;display:flex;align-items:center;gap:10px;}
+.chi{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;}
+.chi-amber{background:linear-gradient(135deg,#fde68a,#fcd34d);}
+.chi-blue{background:linear-gradient(135deg,#bfdbfe,#93c5fd);}
+.cht{font-size:14px;font-weight:700;color:#0f172a;}
+.chs{font-size:11px;color:#94a3b8;}
+.card-body{padding:20px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;gap:12px;align-items:flex-end;}
+.fg{flex:1;}
+.fg label{font-size:10px;color:#64748b;font-weight:700;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.5px;}
+.fg input{width:100%;padding:10px 12px;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;font-size:13px;color:#0f172a;outline:none;font-family:inherit;}
+.fg input:focus{border-color:#0ea5e9;}
+.btn-primary{background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff;border:none;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{padding:11px 16px;text-align:left;color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid #f1f5f9;background:#fafbfc;}
+td{padding:13px 16px;border-bottom:1px solid #f8fafc;vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#fafbff;}
+.badge{display:inline-block;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;}
+.bg-blue{background:#dbeafe;color:#1d4ed8;}
+.bg-green{background:#dcfce7;color:#15803d;}
+.bg-red{background:#fee2e2;color:#dc2626;}
+.bg-amber{background:#fef3c7;color:#b45309;}
+.av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;}
+.cc{display:flex;align-items:center;gap:10px;}
+.cn{font-size:13px;font-weight:600;color:#0f172a;}
+.cl{font-size:11px;color:#94a3b8;}
+.ab{padding:5px 12px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid;font-family:inherit;text-decoration:none;display:inline-block;}
+.ab-view{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe;}
+.ab-del{background:#fff1f2;color:#dc2626;border-color:#fecaca;}
+.error-box{background:#fff1f2;border:1px solid #fecaca;color:#dc2626;padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:16px;}
+</style>
+</head>
+<body>
+<div class="layout">
+<div class="sidebar">
+  <div class="logo-area">
+    <div class="logo-row">
+      <div class="logo-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 4v16M4 12h16" stroke="white" stroke-width="2.8" stroke-linecap="round"/></svg>
+      </div>
+      <div>
+        <div class="logo-text">ShiftCare</div>
+        <div class="logo-sub">Care Platform</div>
+      </div>
+    </div>
+    <div class="admin-badge">⭐ Super Admin</div>
+  </div>
+  <div class="nav-wrap">
+    <div class="nav-sl">Admin Panel</div>
+    <a href="/admin" class="nav-item active">
+      <div class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" fill="#38bdf8"/><rect x="14" y="3" width="7" height="7" rx="1.5" fill="#38bdf8" opacity="0.6"/><rect x="3" y="14" width="7" height="7" rx="1.5" fill="#38bdf8" opacity="0.6"/><rect x="14" y="14" width="7" height="7" rx="1.5" fill="#38bdf8" opacity="0.4"/></svg></div>
+      All Agencies
+    </a>
+    <div class="nav-sl">System</div>
+    <a href="/logout" class="nav-item">
+      <div class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" stroke="#64748b" stroke-width="2" stroke-linecap="round"/></svg></div>
+      Logout
+    </a>
+  </div>
+  <div class="sidebar-bottom">
+    <div class="user-card">
+      <div class="user-av">AD</div>
+      <div>
+        <div class="user-name">Super Admin</div>
+        <div class="user-role">Administrator</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="topbar">
+    <div>
+      <div class="page-title">Admin Panel 👑</div>
+      <div class="page-sub">Manage all agencies on ShiftCare</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-shine" style="background:#3b82f6"></div>
+        <div class="stat-icon">🏥</div>
+        <div class="stat-num">{{ agencies|length }}</div>
+        <div class="stat-label">Total Agencies</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-shine" style="background:#10b981"></div>
+        <div class="stat-icon">👥</div>
+        <div class="stat-num">{{ agencies|sum(attribute='carers')|list|length }}</div>
+        <div class="stat-label">Total Staff</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-shine" style="background:#f59e0b"></div>
+        <div class="stat-icon">📅</div>
+        <div class="stat-num">{{ agencies|sum(attribute='shifts')|list|length }}</div>
+        <div class="stat-label">Total Shifts</div>
+      </div>
+    </div>
+
+    <!-- CREATE AGENCY -->
+    <div class="card">
+      <div class="card-head">
+        <div class="chi chi-amber"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#b45309" stroke-width="2"/><path d="M12 7v10M7 12h10" stroke="#b45309" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div><div class="cht">Create New Agency</div><div class="chs">Add a new agency to ShiftCare</div></div>
+      </div>
+      <div class="card-body">
+        <form action="/admin/create_agency" method="post">
+          <div class="form-grid">
+            <div class="fg"><label>Agency Name</label><input name="name" placeholder="e.g. Leeds Care Ltd" required></div>
+            <div class="fg"><label>Username</label><input name="username" placeholder="e.g. leedscare" required></div>
+            <div class="fg"><label>Password</label><input name="password" placeholder="e.g. pass1234" required></div>
+            <div class="fg"><label>Email</label><input name="email" type="email" placeholder="e.g. info@leedscare.com" required></div>
+            <button class="btn-primary" type="submit">Create Agency</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ALL AGENCIES -->
+    <div class="card">
+      <div class="card-head">
+        <div class="chi chi-blue"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="#1d4ed8" stroke-width="2"/></svg></div>
+        <div><div class="cht">All Agencies</div><div class="chs">Manage agency accounts</div></div>
+      </div>
+      <table>
+        <tr><th>Agency</th><th>Username</th><th>Email</th><th>Staff</th><th>Shifts</th><th>Actions</th></tr>
+        {% for agency in agencies %}
+        <tr>
+          <td>
+            <div class="cc">
+              <div class="av" style="background:linear-gradient(135deg,#38bdf8,#0284c7)">{{ agency.name[:2].upper() }}</div>
+              <div><div class="cn">{{ agency.name }}</div><div class="cl">Created {{ agency.created_at.strftime('%d %b %Y') }}</div></div>
+            </div>
+          </td>
+          <td><span class="badge bg-blue">{{ agency.username }}</span></td>
+          <td style="color:#64748b;font-size:12px;">{{ agency.email }}</td>
+          <td><span class="badge bg-green">{{ agency.carers|length }} staff</span></td>
+          <td><span class="badge bg-amber">{{ agency.shifts|length }} shifts</span></td>
+          <td>
+            <div style="display:flex;gap:6px;">
+              <a href="/admin/view_agency/{{ agency.id }}" class="ab ab-view">👁 View</a>
+              <a href="/admin/delete_agency/{{ agency.id }}" class="ab ab-del" onclick="return confirm('Delete {{ agency.name }}?')">🗑 Delete</a>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+        {% if agencies|length == 0 %}
+        <tr><td colspan="6" style="text-align:center;color:#94a3b8;padding:24px">No agencies yet. Create one above!</td></tr>
+        {% endif %}
+      </table>
+    </div>
+
+  </div>
+</div>
+</div>
+</body>
+</html>

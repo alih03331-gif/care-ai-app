@@ -1,102 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Care Staff Matcher</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: #f0f2f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .login-card {
-            background: white;
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 380px;
-        }
-        .login-card h1 {
-            text-align: center;
-            color: #1a73e8;
-            margin-bottom: 8px;
-            font-size: 24px;
-        }
-        .login-card p {
-            text-align: center;
-            color: #888;
-            margin-bottom: 24px;
-            font-size: 14px;
-        }
-        .form-group {
-            margin-bottom: 16px;
-        }
-        .form-group label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            color: #555;
-            margin-bottom: 6px;
-        }
-        .form-group input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 14px;
-            outline: none;
-        }
-        .form-group input:focus { border-color: #1a73e8; }
-        .btn-login {
-            width: 100%;
-            padding: 12px;
-            background: #1a73e8;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 8px;
-        }
-        .btn-login:hover { background: #1558b0; }
-        .error {
-            background: #fce4ec;
-            color: #c62828;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 13px;
-            margin-bottom: 16px;
-            text-align: center;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShiftCare — Login</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:linear-gradient(135deg,#0f172a 0%,#1e293b 50%,#0f2744 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;}
+.bg-grid{position:fixed;inset:0;background-image:linear-gradient(rgba(56,189,248,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,248,0.06) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;}
+.card{background:#fff;border-radius:24px;padding:40px;width:100%;max-width:400px;position:relative;box-shadow:0 24px 64px rgba(0,0,0,0.4);}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#38bdf8,#0ea5e9,#0284c7);border-radius:24px 24px 0 0;}
+.logo-row{display:flex;align-items:center;gap:12px;margin-bottom:28px;justify-content:center;}
+.logo-icon{width:48px;height:48px;background:linear-gradient(135deg,#38bdf8,#0284c7);border-radius:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 20px rgba(56,189,248,0.4);}
+.logo-text{font-size:22px;font-weight:800;color:#0f172a;}
+.logo-sub{font-size:10px;color:#94a3b8;font-weight:600;letter-spacing:1px;text-transform:uppercase;}
+h2{font-size:20px;font-weight:700;color:#0f172a;margin-bottom:6px;text-align:center;}
+.subtitle{font-size:13px;color:#94a3b8;text-align:center;margin-bottom:24px;}
+.fg{margin-bottom:16px;}
+.fg label{font-size:11px;color:#64748b;font-weight:700;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;}
+.fg input{width:100%;padding:12px 14px;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:11px;font-size:14px;color:#0f172a;outline:none;font-family:inherit;transition:all 0.2s;}
+.fg input:focus{border-color:#0ea5e9;background:#fff;box-shadow:0 0 0 3px rgba(14,165,233,0.1);}
+.btn{width:100%;padding:13px;background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff;border:none;border-radius:11px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:8px;position:relative;overflow:hidden;box-shadow:0 4px 14px rgba(14,165,233,0.4);}
+.btn::after{content:'';position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,rgba(255,255,255,0.15),transparent);}
+.error{background:#fff1f2;border:1px solid #fecaca;color:#dc2626;padding:10px 14px;border-radius:10px;font-size:13px;font-weight:600;margin-bottom:16px;text-align:center;}
+.demo-box{margin-top:20px;padding:14px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;}
+.demo-title{font-size:11px;color:#94a3b8;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;}
+.demo-item{font-size:12px;color:#64748b;margin-bottom:4px;}
+.demo-item span{font-weight:600;color:#0ea5e9;}
+</style>
 </head>
 <body>
-    <div class="login-card">
-        <h1>🏥 Care Matcher</h1>
-        <p>Sign in to your dashboard</p>
-
-        {% if error %}
-            <div class="error">❌ {{ error }}</div>
-        {% endif %}
-
-        <form action="/login" method="post">
-            <div class="form-group">
-                <label>Username</label>
-                <input name="username" placeholder="Enter username" autofocus>
-            </div>
-            <div class="form-group">
-                <label>Password</label>
-                <input name="password" type="password" placeholder="Enter password">
-            </div>
-            <button class="btn-login" type="submit">Login</button>
-        </form>
+<div class="bg-grid"></div>
+<div class="card">
+  <div class="logo-row">
+    <div class="logo-icon">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+        <path d="M12 4v16M4 12h16" stroke="white" stroke-width="2.8" stroke-linecap="round"/>
+      </svg>
     </div>
+    <div>
+      <div class="logo-text">ShiftCare</div>
+      <div class="logo-sub">Care Platform</div>
+    </div>
+  </div>
+  <h2>Welcome back</h2>
+  <p class="subtitle">Sign in to your agency dashboard</p>
+
+  {% if error %}
+  <div class="error">❌ {{ error }}</div>
+  {% endif %}
+
+  <form action="/login" method="post">
+    <div class="fg">
+      <label>Username</label>
+      <input name="username" placeholder="Enter your username" autofocus required>
+    </div>
+    <div class="fg">
+      <label>Password</label>
+      <input name="password" type="password" placeholder="Enter your password" required>
+    </div>
+    <button class="btn" type="submit">Sign In →</button>
+  </form>
+
+  <div class="demo-box">
+    <div class="demo-title">Demo Credentials</div>
+    <div class="demo-item">Admin: <span>admin</span> / <span>care1234</span></div>
+  </div>
+</div>
 </body>
 </html>
