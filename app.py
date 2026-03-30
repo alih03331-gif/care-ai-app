@@ -1,13 +1,14 @@
-from flask import Flask, request, render_template, redirect, session, url_for
+from flask import Flask, request, render_template, redirect, session
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import requests as req
-import json
 import os
 
 app = Flask(__name__)
 app.secret_key = "shiftcare2024secure"
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///shiftcare.db"
+
+# ✅ Uses PostgreSQL on Render, SQLite locally
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", "sqlite:///shiftcare.db")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
@@ -63,7 +64,6 @@ SHIFT_NAMES = [
 def init_db():
     with app.app_context():
         db.create_all()
-        # Create super admin if not exists
         if not Agency.query.filter_by(username="admin").first():
             admin = Agency(
                 name="ShiftCare Admin",
@@ -74,7 +74,12 @@ def init_db():
             )
             db.session.add(admin)
             db.session.commit()
+            print("✅ Admin account created!")
 
+
+# ============================================================
+# HELPER FUNCTIONS
+# ============================================================
 
 def get_coordinates(place_name):
     try:
@@ -128,6 +133,16 @@ def find_best_match(skill, shift_location, agency_id):
     return best_match, best_score, best_distance, best_carer
 
 
+def get_dashboard_stats(agency_id):
+    all_carers = Carer.query.filter_by(agency_id=agency_id).all()
+    shifts = Shift.query.filter_by(agency_id=agency_id).all()
+    shift_dict = {s.shift_name: s for s in shifts}
+    urgent_count = sum(1 for s in shifts if s.urgent)
+    assigned_count = sum(1 for s in shifts if s.carer_name)
+    available_count = sum(1 for c in all_carers if c.available)
+    return all_carers, shift_dict, urgent_count, assigned_count, available_count
+
+
 # ============================================================
 # AUTH ROUTES
 # ============================================================
@@ -171,18 +186,12 @@ def home():
     agency_id = session["agency_id"]
     search = request.args.get("search", "").lower()
 
-    carers = Carer.query.filter_by(agency_id=agency_id).all()
+    all_carers, shift_dict, urgent_count, assigned_count, available_count = get_dashboard_stats(agency_id)
+
+    carers = all_carers
     if search:
-        carers = [c for c in carers if search in c.name.lower() or
+        carers = [c for c in all_carers if search in c.name.lower() or
                   any(search in s.lower() for s in c.skills_list())]
-
-    shifts = Shift.query.filter_by(agency_id=agency_id).all()
-    shift_dict = {s.shift_name: s for s in shifts}
-
-    all_carers = Carer.query.filter_by(agency_id=agency_id).all()
-    urgent_count = sum(1 for s in shifts if s.urgent)
-    assigned_count = sum(1 for s in shifts if s.carer_name)
-    available_count = sum(1 for c in all_carers if c.available)
 
     return render_template("index.html",
                            carers=carers,
@@ -196,6 +205,7 @@ def home():
                            result=None,
                            score=None,
                            match_location=None,
+                           match_skill=None,
                            distance=None,
                            matched_carer=None,
                            agency_name=session["agency_name"])
@@ -276,13 +286,7 @@ def match():
     location = request.form.get("location", "").strip()
 
     result, score, distance, matched_carer = find_best_match(skill, location, agency_id)
-
-    all_carers = Carer.query.filter_by(agency_id=agency_id).all()
-    shifts = Shift.query.filter_by(agency_id=agency_id).all()
-    shift_dict = {s.shift_name: s for s in shifts}
-    urgent_count = sum(1 for s in shifts if s.urgent)
-    assigned_count = sum(1 for s in shifts if s.carer_name)
-    available_count = sum(1 for c in all_carers if c.available)
+    all_carers, shift_dict, urgent_count, assigned_count, available_count = get_dashboard_stats(agency_id)
 
     return render_template("index.html",
                            carers=all_carers,
@@ -293,6 +297,7 @@ def match():
                            result=result,
                            score=score,
                            match_location=location,
+                           match_skill=skill,
                            distance=distance,
                            matched_carer=matched_carer,
                            urgent_count=urgent_count,
@@ -325,7 +330,12 @@ def create_agency():
     if Agency.query.filter_by(username=username).first():
         return redirect("/admin?error=username_taken")
 
-    agency = Agency(name=name, username=username, password=password, email=email)
+    agency = Agency(
+        name=name,
+        username=username,
+        password=password,
+        email=email
+    )
     db.session.add(agency)
     db.session.commit()
     return redirect("/admin")
@@ -349,9 +359,17 @@ def view_agency(agency_id):
     agency = Agency.query.get(agency_id)
     carers = Carer.query.filter_by(agency_id=agency_id).all()
     shifts = Shift.query.filter_by(agency_id=agency_id).all()
-    return render_template("admin_view.html", agency=agency, carers=carers, shifts=shifts)
+    return render_template("admin_view.html",
+                           agency=agency,
+                           carers=carers,
+                           shifts=shifts)
 
+
+# ============================================================
+# RUN
+# ============================================================
+
+init_db()
 
 if __name__ == "__main__":
-    init_db()
     app.run(debug=True)
