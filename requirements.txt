@@ -3,3 +3,4 @@ requests
 gunicorn
 flask-sqlalchemy
 psycopg2-binary
+flask-mail

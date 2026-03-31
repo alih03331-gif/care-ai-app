@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template, redirect, session
 from flask_sqlalchemy import SQLAlchemy
+from flask_mail import Mail, Message
 from datetime import datetime
 import requests as req
 import os
@@ -7,11 +8,22 @@ import os
 app = Flask(__name__)
 app.secret_key = "shiftcare2024secure"
 
-# ✅ Uses PostgreSQL on Render, SQLite locally
+# ✅ Database
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", "sqlite:///shiftcare.db")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+# ✅ Email config
+app.config["MAIL_SERVER"] = "smtp.gmail.com"
+app.config["MAIL_PORT"] = 587
+app.config["MAIL_USE_TLS"] = True
+app.config["MAIL_USERNAME"] = os.environ.get("MAIL_USERNAME", "alih03331@gmail.com")
+app.config["MAIL_PASSWORD"] = os.environ.get("MAIL_PASSWORD", "ckfs zqbu xckx cbfn")
+app.config["MAIL_DEFAULT_SENDER"] = os.environ.get("MAIL_USERNAME", "alih03331@gmail.com")
+
+ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL", "alih03331@gmail.com")
+
 db = SQLAlchemy(app)
+mail = Mail(app)
 
 # ============================================================
 # DATABASE MODELS
@@ -35,6 +47,7 @@ class Carer(db.Model):
     skills = db.Column(db.String(200), nullable=False)
     location = db.Column(db.String(100), nullable=False)
     available = db.Column(db.Boolean, default=True)
+    email = db.Column(db.String(100), nullable=True)
     agency_id = db.Column(db.Integer, db.ForeignKey("agency.id"), nullable=False)
 
     def skills_list(self):
@@ -47,6 +60,7 @@ class Shift(db.Model):
     carer_name = db.Column(db.String(100), nullable=True)
     urgent = db.Column(db.Boolean, default=False)
     notes = db.Column(db.String(300), default="")
+    location = db.Column(db.String(100), default="")
     agency_id = db.Column(db.Integer, db.ForeignKey("agency.id"), nullable=False)
 
 
@@ -69,12 +83,155 @@ def init_db():
                 name="ShiftCare Admin",
                 username="admin",
                 password="care1234",
-                email="admin@shiftcare.com",
+                email=ADMIN_EMAIL,
                 is_admin=True
             )
             db.session.add(admin)
             db.session.commit()
             print("✅ Admin account created!")
+
+
+# ============================================================
+# EMAIL FUNCTIONS
+# ============================================================
+
+def send_shift_assigned_email(carer_name, carer_email, shift_name, location, notes, urgent, agency_name):
+    """Send email to carer when assigned to a shift"""
+    try:
+        if not carer_email:
+            return
+
+        maps_link = f"https://www.google.com/maps/search/{location.replace(' ', '+')}"
+
+        subject = f"{'🔴 URGENT: ' if urgent else ''}Shift Assignment - {shift_name}"
+
+        body = f"""
+Dear {carer_name},
+
+You have been assigned to a shift by {agency_name}.
+
+📅 SHIFT DETAILS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Shift: {shift_name}
+Location: {location}
+{'⚠️ THIS IS AN URGENT SHIFT' if urgent else ''}
+{f'Notes: {notes}' if notes else ''}
+
+📍 VIEW LOCATION ON MAP:
+{maps_link}
+
+Please confirm your availability by contacting your agency.
+
+Best regards,
+ShiftCare Platform
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+This is an automated message from ShiftCare.
+        """
+
+        msg = Message(
+            subject=subject,
+            recipients=[carer_email],
+            body=body
+        )
+        mail.send(msg)
+        print(f"✅ Email sent to carer: {carer_email}")
+    except Exception as e:
+        print(f"❌ Email error: {e}")
+
+
+def send_admin_shift_notification(carer_name, shift_name, location, urgent, agency_name):
+    """Send email to admin when shift is assigned"""
+    try:
+        subject = f"{'🔴 URGENT SHIFT: ' if urgent else ''}Shift Assigned - {agency_name}"
+
+        body = f"""
+ShiftCare Admin Notification
+
+A shift has been assigned:
+
+Agency: {agency_name}
+Carer: {carer_name}
+Shift: {shift_name}
+Location: {location}
+{'⚠️ MARKED AS URGENT' if urgent else 'Status: Normal'}
+
+View dashboard: https://care-ai-app-hqsi.onrender.com
+
+ShiftCare Platform
+        """
+
+        msg = Message(
+            subject=subject,
+            recipients=[ADMIN_EMAIL],
+            body=body
+        )
+        mail.send(msg)
+        print(f"✅ Admin notification sent!")
+    except Exception as e:
+        print(f"❌ Admin email error: {e}")
+
+
+def send_new_carer_email(carer_name, agency_name):
+    """Send confirmation email to admin when new carer added"""
+    try:
+        subject = f"New Staff Added - {agency_name}"
+
+        body = f"""
+ShiftCare Admin Notification
+
+A new care staff member has been registered:
+
+Name: {carer_name}
+Agency: {agency_name}
+Time: {datetime.utcnow().strftime('%d %b %Y %H:%M')} UTC
+
+View dashboard: https://care-ai-app-hqsi.onrender.com/admin
+
+ShiftCare Platform
+        """
+
+        msg = Message(
+            subject=subject,
+            recipients=[ADMIN_EMAIL],
+            body=body
+        )
+        mail.send(msg)
+        print(f"✅ New carer email sent!")
+    except Exception as e:
+        print(f"❌ New carer email error: {e}")
+
+
+def send_urgent_alert(shift_name, agency_name, location):
+    """Send urgent alert to admin"""
+    try:
+        subject = f"🔴 URGENT SHIFT ALERT - {agency_name}"
+
+        body = f"""
+⚠️ URGENT SHIFT ALERT
+
+An urgent shift has been flagged on ShiftCare!
+
+Agency: {agency_name}
+Shift: {shift_name}
+Location: {location}
+Time: {datetime.utcnow().strftime('%d %b %Y %H:%M')} UTC
+
+Immediate action required!
+
+View dashboard: https://care-ai-app-hqsi.onrender.com/admin
+
+ShiftCare Platform
+        """
+
+        msg = Message(
+            subject=subject,
+            recipients=[ADMIN_EMAIL],
+            body=body
+        )
+        mail.send(msg)
+        print(f"✅ Urgent alert sent!")
+    except Exception as e:
+        print(f"❌ Urgent email error: {e}")
 
 
 # ============================================================
@@ -215,15 +372,24 @@ def home():
 def add_carer():
     if "agency_id" not in session:
         return redirect("/login")
+
+    name = request.form["name"]
+    agency_name = session["agency_name"]
+
     carer = Carer(
-        name=request.form["name"],
+        name=name,
         skills=request.form["skills"],
         location=request.form["location"],
         available=request.form.get("available") == "on",
+        email=request.form.get("email", ""),
         agency_id=session["agency_id"]
     )
     db.session.add(carer)
     db.session.commit()
+
+    # ✅ Send admin notification
+    send_new_carer_email(name, agency_name)
+
     return redirect("/")
 
 
@@ -253,27 +419,53 @@ def delete(carer_id):
 def assign_shift():
     if "agency_id" not in session:
         return redirect("/login")
+
     agency_id = session["agency_id"]
+    agency_name = session["agency_name"]
     shift_name = request.form["shift_name"]
     carer_name = request.form["carer_name"]
     notes = request.form.get("notes", "")
     urgent = request.form.get("urgent") == "on"
+    shift_location = request.form.get("shift_location", "")
 
     shift = Shift.query.filter_by(agency_id=agency_id, shift_name=shift_name).first()
     if shift:
         shift.carer_name = carer_name if carer_name != "none" else None
         shift.notes = notes
         shift.urgent = urgent
+        shift.location = shift_location
     else:
         shift = Shift(
             shift_name=shift_name,
             carer_name=carer_name if carer_name != "none" else None,
             notes=notes,
             urgent=urgent,
+            location=shift_location,
             agency_id=agency_id
         )
         db.session.add(shift)
     db.session.commit()
+
+    # ✅ Send emails if carer assigned
+    if carer_name and carer_name != "none":
+        carer = Carer.query.filter_by(name=carer_name, agency_id=agency_id).first()
+        if carer and carer.email:
+            send_shift_assigned_email(
+                carer_name=carer.name,
+                carer_email=carer.email,
+                shift_name=shift_name,
+                location=shift_location,
+                notes=notes,
+                urgent=urgent,
+                agency_name=agency_name
+            )
+        # ✅ Notify admin
+        send_admin_shift_notification(carer_name, shift_name, shift_location, urgent, agency_name)
+
+    # ✅ Send urgent alert separately
+    if urgent:
+        send_urgent_alert(shift_name, agency_name, shift_location)
+
     return redirect("/#schedule")
 
 
@@ -281,6 +473,7 @@ def assign_shift():
 def match():
     if "agency_id" not in session:
         return redirect("/login")
+
     agency_id = session["agency_id"]
     skill = request.form.get("skill", "").strip()
     location = request.form.get("location", "").strip()
@@ -330,12 +523,7 @@ def create_agency():
     if Agency.query.filter_by(username=username).first():
         return redirect("/admin?error=username_taken")
 
-    agency = Agency(
-        name=name,
-        username=username,
-        password=password,
-        email=email
-    )
+    agency = Agency(name=name, username=username, password=password, email=email)
     db.session.add(agency)
     db.session.commit()
     return redirect("/admin")
