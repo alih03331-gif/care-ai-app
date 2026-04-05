@@ -637,3 +637,21 @@ init_db()
 
 if __name__ == "__main__":
     app.run(debug=True)
+# ============================================================
+# PWA ROUTES
+# ============================================================
+
+@app.route("/manifest.json")
+def manifest():
+    return app.send_static_file("manifest.json")
+
+@app.route("/sw.js")
+def service_worker():
+    response = app.send_static_file("sw.js")
+    response.headers["Content-Type"] = "application/javascript"
+    response.headers["Cache-Control"] = "no-cache"
+    return response
+
+@app.route("/offline")
+def offline():
+    return render_template("offline.html")
