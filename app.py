@@ -24,7 +24,6 @@ app.config["MAIL_DEFAULT_SENDER"] = os.environ.get("MAIL_USERNAME", "alih03331@g
 # ✅ Stripe
 stripe.api_key = os.environ.get("STRIPE_SECRET_KEY", "")
 STRIPE_PUBLISHABLE_KEY = os.environ.get("STRIPE_PUBLISHABLE_KEY", "")
-
 ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL", "alih03331@gmail.com")
 
 db = SQLAlchemy(app)
@@ -63,14 +62,11 @@ class Agency(db.Model):
     email = db.Column(db.String(100), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     is_admin = db.Column(db.Boolean, default=False)
-
-    # ✅ Subscription fields
     plan = db.Column(db.String(20), default="trial")
     trial_ends = db.Column(db.DateTime, default=lambda: datetime.utcnow() + timedelta(days=14))
     subscription_active = db.Column(db.Boolean, default=True)
     stripe_customer_id = db.Column(db.String(100), nullable=True)
     stripe_subscription_id = db.Column(db.String(100), nullable=True)
-
     carers = db.relationship("Carer", backref="agency", lazy=True, cascade="all, delete-orphan")
     shifts = db.relationship("Shift", backref="agency", lazy=True, cascade="all, delete-orphan")
 
@@ -124,7 +120,8 @@ SHIFT_NAMES = [
 
 def init_db():
     with app.app_context():
-        db.create_all()
+        db.drop_all()    # ⚠️ Drops old tables to fix column errors
+        db.create_all()  # ✅ Creates fresh tables
         if not Agency.query.filter_by(username="admin").first():
             admin = Agency(
                 name="ShiftCare Admin",
@@ -171,6 +168,7 @@ ShiftCare Platform
         """
         msg = Message(subject=subject, recipients=[carer_email], body=body)
         mail.send(msg)
+        print(f"✅ Email sent to: {carer_email}")
     except Exception as e:
         print(f"❌ Email error: {e}")
 
@@ -347,9 +345,7 @@ def create_checkout(plan):
         return redirect("/login")
     if plan not in PLANS:
         return redirect("/pricing")
-
     agency = Agency.query.get(session["agency_id"])
-
     try:
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=["card"],
@@ -609,6 +605,28 @@ def toggle_subscription(agency_id):
         agency.subscription_active = not agency.subscription_active
         db.session.commit()
     return redirect("/admin")
+
+
+# ============================================================
+# PWA ROUTES
+# ============================================================
+
+@app.route("/manifest.json")
+def manifest():
+    return app.send_static_file("manifest.json")
+
+
+@app.route("/sw.js")
+def service_worker():
+    response = app.send_static_file("sw.js")
+    response.headers["Content-Type"] = "application/javascript"
+    response.headers["Cache-Control"] = "no-cache"
+    return response
+
+
+@app.route("/offline")
+def offline():
+    return render_template("offline.html")
 
 
 # ============================================================
