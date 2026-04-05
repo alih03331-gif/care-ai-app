@@ -642,7 +642,7 @@ if __name__ == "__main__":
 # ============================================================
 
 @app.route("/manifest.json")
-def manifest():
+def manifest_json():
     return app.send_static_file("manifest.json")
 
 @app.route("/sw.js")
