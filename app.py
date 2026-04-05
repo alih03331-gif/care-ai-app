@@ -646,7 +646,7 @@ def manifest_json():
     return app.send_static_file("manifest.json")
 
 @app.route("/sw.js")
-def service_worker():
+def sw_file():
     response = app.send_static_file("sw.js")
     response.headers["Content-Type"] = "application/javascript"
     response.headers["Cache-Control"] = "no-cache"
