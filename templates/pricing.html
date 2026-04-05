@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShiftCare — Choose Your Plan</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:linear-gradient(135deg,#0f172a 0%,#1e293b 50%,#0f2744 100%);min-height:100vh;color:#fff;}
+.bg-grid{position:fixed;inset:0;background-image:linear-gradient(rgba(56,189,248,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,248,0.06) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;}
+
+/* NAVBAR */
+.navbar{padding:20px 40px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(255,255,255,0.08);}
+.logo-icon{width:40px;height:40px;background:linear-gradient(135deg,#38bdf8,#0284c7);border-radius:12px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 20px rgba(56,189,248,0.4);}
+.logo-text{font-size:18px;font-weight:800;color:#fff;}
+.logo-sub{font-size:9px;color:#475569;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;}
+.nav-right{margin-left:auto;}
+.btn-outline{background:transparent;color:#38bdf8;border:1px solid rgba(56,189,248,0.4);padding:8px 16px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;font-family:inherit;}
+
+/* HERO */
+.hero{text-align:center;padding:60px 20px 40px;}
+.trial-badge{display:inline-block;background:rgba(56,189,248,0.15);color:#38bdf8;padding:6px 16px;border-radius:20px;font-size:12px;font-weight:700;border:1px solid rgba(56,189,248,0.3);margin-bottom:20px;}
+.hero h1{font-size:42px;font-weight:900;letter-spacing:-1px;margin-bottom:14px;}
+.hero h1 span{background:linear-gradient(135deg,#38bdf8,#0ea5e9);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
+.hero p{font-size:16px;color:#64748b;max-width:500px;margin:0 auto;}
+
+/* TRIAL BANNER */
+.trial-banner{background:linear-gradient(135deg,rgba(245,158,11,0.15),rgba(217,119,6,0.1));border:1px solid rgba(245,158,11,0.3);border-radius:14px;padding:16px 24px;margin:0 auto 40px;max-width:600px;text-align:center;}
+.trial-banner h3{color:#fbbf24;font-size:16px;font-weight:700;margin-bottom:4px;}
+.trial-banner p{color:#94a3b8;font-size:13px;}
+.trial-days{font-size:32px;font-weight:900;color:#fbbf24;}
+
+/* PLANS */
+.plans-wrap{display:flex;gap:24px;justify-content:center;padding:0 20px 60px;flex-wrap:wrap;max-width:900px;margin:0 auto;}
+.plan-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:32px;width:100%;max-width:360px;position:relative;overflow:hidden;transition:all 0.3s;}
+.plan-card:hover{transform:translateY(-4px);border-color:rgba(56,189,248,0.3);}
+.plan-card.popular{border-color:rgba(56,189,248,0.5);background:rgba(56,189,248,0.08);}
+.popular-badge{position:absolute;top:16px;right:16px;background:linear-gradient(135deg,#38bdf8,#0ea5e9);color:#fff;font-size:10px;font-weight:800;padding:4px 12px;border-radius:20px;text-transform:uppercase;letter-spacing:0.5px;}
+.plan-shine{position:absolute;top:-60px;right:-60px;width:160px;height:160px;border-radius:50%;background:#38bdf8;filter:blur(40px);opacity:0.08;}
+.plan-name{font-size:14px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.plan-price{display:flex;align-items:baseline;gap:4px;margin-bottom:6px;}
+.plan-price .amount{font-size:48px;font-weight:900;color:#fff;letter-spacing:-2px;}
+.plan-price .currency{font-size:20px;font-weight:700;color:#94a3b8;margin-top:8px;}
+.plan-price .period{font-size:14px;color:#64748b;margin-left:4px;}
+.plan-desc{font-size:13px;color:#64748b;margin-bottom:24px;}
+.plan-features{list-style:none;margin-bottom:28px;}
+.plan-features li{display:flex;align-items:center;gap:10px;font-size:14px;color:#e2e8f0;margin-bottom:12px;}
+.feature-icon{width:20px;height:20px;border-radius:50%;background:rgba(56,189,248,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;}
+.btn-plan{width:100%;padding:14px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;border:none;transition:all 0.2s;position:relative;overflow:hidden;}
+.btn-plan-primary{background:linear-gradient(135deg,#38bdf8,#0ea5e9);color:#fff;box-shadow:0 0 20px rgba(56,189,248,0.4);}
+.btn-plan-primary::after{content:'';position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,rgba(255,255,255,0.15),transparent);}
+.btn-plan-outline{background:transparent;color:#38bdf8;border:1px solid rgba(56,189,248,0.4);}
+.btn-plan:hover{transform:scale(1.02);}
+
+/* FOOTER NOTE */
+.footer-note{text-align:center;padding:0 20px 40px;color:#475569;font-size:13px;}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <div class="logo-icon">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <path d="M12 4v16M4 12h16" stroke="white" stroke-width="2.8" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <div>
+    <div class="logo-text">ShiftCare</div>
+    <div class="logo-sub">Care Platform</div>
+  </div>
+  <div class="nav-right">
+    <a href="/logout" class="btn-outline">Logout</a>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="trial-badge">⚡ Simple, transparent pricing</div>
+  <h1>Choose Your <span>ShiftCare</span> Plan</h1>
+  <p>Everything you need to manage your care staff efficiently</p>
+</div>
+
+<!-- TRIAL BANNER -->
+{% if agency.plan == 'trial' %}
+<div class="trial-banner">
+  <div class="trial-days">{{ agency.trial_days_left() }}</div>
+  <h3>Days left in your free trial</h3>
+  <p>Subscribe now to keep access to all ShiftCare features</p>
+</div>
+{% endif %}
+
+<!-- PLANS -->
+<div class="plans-wrap">
+
+  <!-- BASIC -->
+  <div class="plan-card">
+    <div class="plan-shine"></div>
+    <div class="plan-name">Basic</div>
+    <div class="plan-price">
+      <span class="currency">£</span>
+      <span class="amount">29</span>
+      <span class="period">/month</span>
+    </div>
+    <div class="plan-desc">Perfect for small care agencies</div>
+    <ul class="plan-features">
+      <li><div class="feature-icon">✓</div> Up to 10 staff members</li>
+      <li><div class="feature-icon">✓</div> Email shift alerts</li>
+      <li><div class="feature-icon">✓</div> Weekly schedule</li>
+      <li><div class="feature-icon">✓</div> AI staff matching</li>
+      <li><div class="feature-icon">✓</div> Real road distance</li>
+    </ul>
+    <a href="/create_checkout/basic">
+      <button class="btn-plan btn-plan-outline">Get Basic Plan →</button>
+    </a>
+  </div>
+
+  <!-- PRO -->
+  <div class="plan-card popular">
+    <div class="plan-shine"></div>
+    <div class="popular-badge">⭐ Most Popular</div>
+    <div class="plan-name">Pro</div>
+    <div class="plan-price">
+      <span class="currency">£</span>
+      <span class="amount">79</span>
+      <span class="period">/month</span>
+    </div>
+    <div class="plan-desc">For growing care agencies</div>
+    <ul class="plan-features">
+      <li><div class="feature-icon">✓</div> Unlimited staff members</li>
+      <li><div class="feature-icon">✓</div> Email shift alerts</li>
+      <li><div class="feature-icon">✓</div> Weekly schedule</li>
+      <li><div class="feature-icon">✓</div> AI staff matching</li>
+      <li><div class="feature-icon">✓</div> Real road distance</li>
+      <li><div class="feature-icon">✓</div> Priority support</li>
+      <li><div class="feature-icon">✓</div> Advanced reports</li>
+    </ul>
+    <a href="/create_checkout/pro">
+      <button class="btn-plan btn-plan-primary">Get Pro Plan →</button>
+    </a>
+  </div>
+
+</div>
+
+<div class="footer-note">
+  🔒 Secure payments powered by Stripe &nbsp;·&nbsp;
+  Cancel anytime &nbsp;·&nbsp;
+  No hidden fees
+</div>
+
+</body>
+</html>
