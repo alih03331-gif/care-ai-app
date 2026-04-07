@@ -640,18 +640,3 @@ if __name__ == "__main__":
 # ============================================================
 # PWA ROUTES
 # ============================================================
-
-@app.route("/manifest.json")
-def manifest_json():
-    return app.send_static_file("manifest.json")
-
-@app.route("/sw.js")
-def sw_file():
-    response = app.send_static_file("sw.js")
-    response.headers["Content-Type"] = "application/javascript"
-    response.headers["Cache-Control"] = "no-cache"
-    return response
-
-@app.route("/offline")
-def offline():
-    return render_template("offline.html")
