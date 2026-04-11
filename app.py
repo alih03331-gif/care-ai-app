@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, session, url_for, jsonify
+from flask import Flask, request, render_template, redirect, session, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
 from datetime import datetime, timedelta
@@ -39,14 +39,12 @@ PLANS = {
         "price": 29,
         "currency": "gbp",
         "features": ["Up to 10 staff", "Email alerts", "Weekly schedule", "Staff matching"],
-        "stripe_price_id": os.environ.get("STRIPE_BASIC_PRICE_ID", "")
     },
     "pro": {
         "name": "Pro",
         "price": 79,
         "currency": "gbp",
         "features": ["Unlimited staff", "Email alerts", "Weekly schedule", "Staff matching", "Priority support", "Advanced reports"],
-        "stripe_price_id": os.environ.get("STRIPE_PRO_PRICE_ID", "")
     }
 }
 
@@ -120,8 +118,7 @@ SHIFT_NAMES = [
 
 def init_db():
     with app.app_context():
-        db.drop_all()    # ⚠️ Drops old tables to fix column errors
-        db.create_all()  # ✅ Creates fresh tables
+        db.create_all()
         if not Agency.query.filter_by(username="admin").first():
             admin = Agency(
                 name="ShiftCare Admin",
@@ -608,28 +605,6 @@ def toggle_subscription(agency_id):
 
 
 # ============================================================
-# PWA ROUTES
-# ============================================================
-
-@app.route("/manifest.json")
-def manifest():
-    return app.send_static_file("manifest.json")
-
-
-@app.route("/sw.js")
-def service_worker():
-    response = app.send_static_file("sw.js")
-    response.headers["Content-Type"] = "application/javascript"
-    response.headers["Cache-Control"] = "no-cache"
-    return response
-
-
-@app.route("/offline")
-def offline():
-    return render_template("offline.html")
-
-
-# ============================================================
 # RUN
 # ============================================================
 
@@ -637,6 +612,3 @@ init_db()
 
 if __name__ == "__main__":
     app.run(debug=True)
-# ============================================================
-# PWA ROUTES
-# ============================================================
