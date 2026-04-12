@@ -104,23 +104,6 @@ SHIFT_NAMES = [
 ]
 
 
-def init_db():
-    with app.app_context():
-        db.drop_all()
-        db.create_all()
-        if not Agency.query.filter_by(username="admin").first():
-            admin = Agency(
-                name="ShiftCare Admin",
-                username="admin",
-                password="care1234",
-                email=ADMIN_EMAIL,
-                is_admin=True,
-                subscription_active=True
-            )
-            db.session.add(admin)
-            db.session.commit()
-            print("✅ Admin account created!")
-
 
 def send_shift_assigned_email(carer_name, carer_email, shift_name, location, notes, urgent, agency_name):
     try:
