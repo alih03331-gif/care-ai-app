@@ -9,11 +9,8 @@ import os
 app = Flask(__name__)
 app.secret_key = "shiftcare2024secure"
 
-# ✅ Database
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", "sqlite:///shiftcare.db")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-
-# ✅ Email
 app.config["MAIL_SERVER"] = "smtp.gmail.com"
 app.config["MAIL_PORT"] = 587
 app.config["MAIL_USE_TLS"] = True
@@ -21,17 +18,12 @@ app.config["MAIL_USERNAME"] = os.environ.get("MAIL_USERNAME", "alih03331@gmail.c
 app.config["MAIL_PASSWORD"] = os.environ.get("MAIL_PASSWORD", "")
 app.config["MAIL_DEFAULT_SENDER"] = os.environ.get("MAIL_USERNAME", "alih03331@gmail.com")
 
-# ✅ Stripe
 stripe.api_key = os.environ.get("STRIPE_SECRET_KEY", "")
 STRIPE_PUBLISHABLE_KEY = os.environ.get("STRIPE_PUBLISHABLE_KEY", "")
 ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL", "alih03331@gmail.com")
 
 db = SQLAlchemy(app)
 mail = Mail(app)
-
-# ============================================================
-# PRICING PLANS
-# ============================================================
 
 PLANS = {
     "basic": {
@@ -47,10 +39,6 @@ PLANS = {
         "features": ["Unlimited staff", "Email alerts", "Weekly schedule", "Staff matching", "Priority support", "Advanced reports"],
     }
 }
-
-# ============================================================
-# DATABASE MODELS
-# ============================================================
 
 class Agency(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -118,6 +106,7 @@ SHIFT_NAMES = [
 
 def init_db():
     with app.app_context():
+        db.drop_all()
         db.create_all()
         if not Agency.query.filter_by(username="admin").first():
             admin = Agency(
@@ -132,10 +121,6 @@ def init_db():
             db.session.commit()
             print("✅ Admin account created!")
 
-
-# ============================================================
-# EMAIL FUNCTIONS
-# ============================================================
 
 def send_shift_assigned_email(carer_name, carer_email, shift_name, location, notes, urgent, agency_name):
     try:
@@ -175,13 +160,11 @@ def send_admin_shift_notification(carer_name, shift_name, location, urgent, agen
         subject = f"{'🔴 URGENT: ' if urgent else ''}Shift Assigned - {agency_name}"
         body = f"""
 ShiftCare Notification
-
 Agency: {agency_name}
 Carer: {carer_name}
 Shift: {shift_name}
 Location: {location}
 {'⚠️ URGENT' if urgent else 'Status: Normal'}
-
 View: https://care-ai-app-hqsi.onrender.com
         """
         msg = Message(subject=subject, recipients=[ADMIN_EMAIL], body=body)
@@ -210,12 +193,10 @@ def send_urgent_alert(shift_name, agency_name, location):
         subject = f"🔴 URGENT SHIFT - {agency_name}"
         body = f"""
 ⚠️ URGENT SHIFT ALERT
-
 Agency: {agency_name}
 Shift: {shift_name}
 Location: {location}
 Time: {datetime.utcnow().strftime('%d %b %Y %H:%M')} UTC
-
 View: https://care-ai-app-hqsi.onrender.com/admin
         """
         msg = Message(subject=subject, recipients=[ADMIN_EMAIL], body=body)
@@ -223,10 +204,6 @@ View: https://care-ai-app-hqsi.onrender.com/admin
     except Exception as e:
         print(f"❌ Urgent email error: {e}")
 
-
-# ============================================================
-# HELPER FUNCTIONS
-# ============================================================
 
 def get_coordinates(place_name):
     try:
@@ -290,10 +267,6 @@ def get_dashboard_stats(agency_id):
     return all_carers, shift_dict, urgent_count, assigned_count, available_count
 
 
-# ============================================================
-# AUTH ROUTES
-# ============================================================
-
 @app.route("/login", methods=["GET", "POST"])
 def login():
     error = None
@@ -321,15 +294,14 @@ def logout():
     return redirect("/login")
 
 
-# ============================================================
-# PRICING & PAYMENTS
-# ============================================================
-
 @app.route("/pricing")
 def pricing():
     if "agency_id" not in session:
         return redirect("/login")
     agency = Agency.query.get(session["agency_id"])
+    if not agency:
+        session.clear()
+        return redirect("/login")
     return render_template("pricing.html",
                            agency=agency,
                            plans=PLANS,
@@ -343,6 +315,9 @@ def create_checkout(plan):
     if plan not in PLANS:
         return redirect("/pricing")
     agency = Agency.query.get(session["agency_id"])
+    if not agency:
+        session.clear()
+        return redirect("/login")
     try:
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=["card"],
@@ -375,6 +350,9 @@ def payment_success(plan):
     if "agency_id" not in session:
         return redirect("/login")
     agency = Agency.query.get(session["agency_id"])
+    if not agency:
+        session.clear()
+        return redirect("/login")
     agency.plan = plan
     agency.subscription_active = True
     db.session.commit()
@@ -386,10 +364,6 @@ def payment_cancel():
     return redirect("/pricing")
 
 
-# ============================================================
-# AGENCY DASHBOARD
-# ============================================================
-
 @app.route("/")
 def home():
     if "agency_id" not in session:
@@ -398,6 +372,9 @@ def home():
         return redirect("/admin")
 
     agency = Agency.query.get(session["agency_id"])
+    if not agency:
+        session.clear()
+        return redirect("/login")
     if not agency.is_active():
         return redirect("/pricing")
 
@@ -519,11 +496,14 @@ def match():
     if "agency_id" not in session:
         return redirect("/login")
     agency_id = session["agency_id"]
+    agency = Agency.query.get(agency_id)
+    if not agency:
+        session.clear()
+        return redirect("/login")
     skill = request.form.get("skill", "").strip()
     location = request.form.get("location", "").strip()
     result, score, distance, matched_carer = find_best_match(skill, location, agency_id)
     all_carers, shift_dict, urgent_count, assigned_count, available_count = get_dashboard_stats(agency_id)
-    agency = Agency.query.get(agency_id)
 
     return render_template("index.html",
                            carers=all_carers,
@@ -543,10 +523,6 @@ def match():
                            agency_name=session["agency_name"],
                            agency=agency)
 
-
-# ============================================================
-# ADMIN PANEL
-# ============================================================
 
 @app.route("/admin")
 def admin():
@@ -603,10 +579,6 @@ def toggle_subscription(agency_id):
         db.session.commit()
     return redirect("/admin")
 
-
-# ============================================================
-# RUN
-# ============================================================
 
 init_db()
 
